@@ -1,0 +1,94 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+model State {
+  id          String   @id @default(cuid())
+  name        String   @unique @db.VarChar(120)
+  slug        String   @unique @db.VarChar(140)
+  description String?  @db.Text
+  imageUrl    String?  @db.VarChar(500)
+  isActive    Boolean  @default(true)
+  cities      City[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([slug])
+}
+
+model City {
+  id          String   @id @default(cuid())
+  name        String   @db.VarChar(120)
+  slug        String   @db.VarChar(140)
+  description String?  @db.Text
+  imageUrl    String?  @db.VarChar(500)
+  isActive    Boolean  @default(true)
+  stateId     String
+  state       State    @relation(fields: [stateId], references: [id], onDelete: Cascade)
+  places      Place[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([stateId, slug])
+  @@index([slug])
+  @@index([stateId])
+}
+
+model Place {
+  id               String          @id @default(cuid())
+  name             String          @db.VarChar(160)
+  slug             String          @db.VarChar(180)
+  shortDescription String?         @db.VarChar(300)
+  description      String          @db.Text
+  imageUrl         String?         @db.VarChar(500)
+  latitude         Decimal?        @db.Decimal(9, 6)
+  longitude        Decimal?        @db.Decimal(9, 6)
+  bestTimeToVisit  String?         @db.VarChar(160)
+  isTop            Boolean         @default(false)
+  trendingScore    Int             @default(0)
+  viewCount        Int             @default(0)
+  isActive         Boolean         @default(true)
+  cityId           String
+  city             City            @relation(fields: [cityId], references: [id], onDelete: Cascade)
+  categories       PlaceCategory[]
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+
+  @@unique([cityId, slug])
+  @@index([isTop, trendingScore])
+  @@index([slug])
+  @@index([cityId])
+}
+
+model Category {
+  id          String          @id @default(cuid())
+  name        String          @unique @db.VarChar(100)
+  slug        String          @unique @db.VarChar(120)
+  description String?         @db.Text
+  imageUrl    String?         @db.VarChar(500)
+  isActive    Boolean         @default(true)
+  places      PlaceCategory[]
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  @@index([slug])
+}
+
+model PlaceCategory {
+  placeId    String
+  categoryId String
+  place      Place    @relation(fields: [placeId], references: [id], onDelete: Cascade)
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+
+  @@id([placeId, categoryId])
+  @@index([categoryId])
+}
