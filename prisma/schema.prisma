@@ -7,8 +7,9 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "postgresql"
 }
+
 
 model State {
   id          String   @id @default(cuid())

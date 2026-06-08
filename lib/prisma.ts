@@ -1,17 +1,16 @@
-import { PrismaMariaDb } from "@prisma/adapter-mariadb";
 import { PrismaClient } from "@prisma/client";
+import { PrismaPg } from "@prisma/adapter-pg";
 
 const databaseUrl = process.env.DATABASE_URL;
-const placeholderDatabaseUrl =
-  "mysql://johndoe:randompassword@localhost:3306/mydb";
+
 
 if (!databaseUrl) {
   throw new Error("DATABASE_URL is required to initialize Prisma.");
 }
 
-export const isDatabaseConfigured = databaseUrl !== placeholderDatabaseUrl;
+export const isDatabaseConfigured = true;
 
-const adapter = new PrismaMariaDb(databaseUrl);
+const adapter = new PrismaPg(databaseUrl);
 
 const globalForPrisma = globalThis as unknown as {
   prisma?: PrismaClient;
@@ -19,6 +18,8 @@ const globalForPrisma = globalThis as unknown as {
 
 export const prisma = globalForPrisma.prisma ?? new PrismaClient({ adapter });
 
+
 if (process.env.NODE_ENV !== "production") {
   globalForPrisma.prisma = prisma;
 }
+
