@@ -94,7 +94,10 @@ export function getStateBySlug(stateSlug: string) {
   );
 }
 
-export function getCityByStateAndCitySlug(stateSlug: string, citySlug: string) {
+export async function getCityByStateAndCitySlug(
+  stateSlug: string,
+  citySlug: string,
+): Promise<any> {
   return safeRead(
     () =>
       prisma.city.findFirst({

@@ -1,9 +1,9 @@
-import { notFound } from "next/navigation";
+import { notFound } from 'next/navigation';
 
-import { PlaceGrid } from "@/components/explorer/PlaceGrid";
-import { getCityByStateAndCitySlug } from "@/services/travel-service";
+import { PlaceGrid } from '@/components/explorer/PlaceGrid';
+import { getCityByStateAndCitySlug } from '@/services/travel-service';
 
-export const dynamic = "force-dynamic";
+export const dynamic = 'force-dynamic';
 
 type CityExplorerPageProps = {
   params: Promise<{
@@ -12,7 +12,9 @@ type CityExplorerPageProps = {
   }>;
 };
 
-export default async function CityExplorerPage({ params }: CityExplorerPageProps) {
+export default async function CityExplorerPage({
+  params,
+}: CityExplorerPageProps) {
   const { stateSlug, citySlug } = await params;
   const city = await getCityByStateAndCitySlug(stateSlug, citySlug);
 
@@ -20,7 +22,7 @@ export default async function CityExplorerPage({ params }: CityExplorerPageProps
     notFound();
   }
 
-  const places = city.places.map((place) => ({
+  const places = (city as any).places.map((place: any) => ({
     ...place,
     city,
   }));
@@ -35,7 +37,8 @@ export default async function CityExplorerPage({ params }: CityExplorerPageProps
           {city.name}
         </h1>
         <p className="mt-5 text-lg text-muted-foreground">
-          {city.description ?? `Explore places in ${city.name}, ${city.state.name}.`}
+          {city.description ??
+            `Explore places in ${city.name}, ${city.state.name}.`}
         </p>
       </div>
       <PlaceGrid places={places} />
