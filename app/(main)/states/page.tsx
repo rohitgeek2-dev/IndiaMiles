@@ -1,11 +1,11 @@
-import Link from "next/link";
+import Link from 'next/link';
 
-import { getStates } from "@/services/travel-service";
+import { getStates } from '@/services/travel-service';
 
-export const dynamic = "force-dynamic";
+export const dynamic = 'force-dynamic';
 
 export default async function StatesPage() {
-  const states = await getStates();
+  const states = (await getStates()) as any[];
 
   return (
     <section className="container mx-auto px-4 py-12">
@@ -23,7 +23,7 @@ export default async function StatesPage() {
       </div>
 
       <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-        {states.map((state) => (
+        {states.map((state: any) => (
           <Link
             key={state.id}
             href={`/${state.slug}`}
@@ -31,7 +31,7 @@ export default async function StatesPage() {
           >
             <h2 className="text-2xl font-semibold">{state.name}</h2>
             <p className="mt-3 line-clamp-3 text-sm text-muted-foreground">
-              {state.description ?? "Discover cities and places in this state."}
+              {state.description ?? 'Discover cities and places in this state.'}
             </p>
           </Link>
         ))}
