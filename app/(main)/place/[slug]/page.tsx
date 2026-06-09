@@ -1,15 +1,15 @@
-import Link from "next/link";
-import { notFound } from "next/navigation";
-import { CalendarDays, MapPin } from "lucide-react";
+import Link from 'next/link';
+import { notFound } from 'next/navigation';
+import { CalendarDays, MapPin } from 'lucide-react';
 
-import { Badge } from "@/components/ui/badge";
-import { PlaceGrid } from "@/components/explorer/PlaceGrid";
+import { Badge } from '@/components/ui/badge';
+import { PlaceGrid } from '@/components/explorer/PlaceGrid';
 import {
   getPlaceBySlug,
   getRecommendedPlaces,
-} from "@/services/travel-service";
+} from '@/services/travel-service';
 
-export const dynamic = "force-dynamic";
+export const dynamic = 'force-dynamic';
 
 type PlaceDetailPageProps = {
   params: Promise<{
@@ -17,12 +17,14 @@ type PlaceDetailPageProps = {
   }>;
 };
 
-export default async function PlaceDetailPage({ params }: PlaceDetailPageProps) {
+export default async function PlaceDetailPage({
+  params,
+}: PlaceDetailPageProps) {
   const { slug } = await params;
-  const [place, recommendations] = await Promise.all([
+  const [place, recommendations] = (await Promise.all([
     getPlaceBySlug(slug),
     getRecommendedPlaces(slug),
-  ]);
+  ])) as any;
 
   if (!place) {
     notFound();
@@ -33,7 +35,7 @@ export default async function PlaceDetailPage({ params }: PlaceDetailPageProps) 
       <div className="grid gap-10 lg:grid-cols-[1fr_380px]">
         <div>
           <div className="mb-6 flex flex-wrap gap-2">
-            {place.categories.map(({ category }) => (
+            {place.categories.map(({ category }: any) => (
               <Badge key={category.id} variant="secondary">
                 {category.name}
               </Badge>
