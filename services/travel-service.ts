@@ -23,7 +23,10 @@ export type ExplorerPlace = Prisma.PlaceGetPayload<{
   include: typeof placeExplorerInclude;
 }>;
 
-async function safeRead<T>(operation: () => Promise<T>, fallback: T) {
+async function safeRead<T>(
+  operation: () => Promise<T>,
+  fallback: T
+): Promise<T> {
   if (!isDatabaseConfigured) {
     return fallback;
   }
