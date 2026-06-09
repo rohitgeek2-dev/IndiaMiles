@@ -1,9 +1,9 @@
-import { notFound } from "next/navigation";
+import { notFound } from 'next/navigation';
 
-import { PlaceGrid } from "@/components/explorer/PlaceGrid";
-import { getCategoryBySlug, getPlaces } from "@/services/travel-service";
+import { PlaceGrid } from '@/components/explorer/PlaceGrid';
+import { getCategoryBySlug, getPlaces } from '@/services/travel-service';
 
-export const dynamic = "force-dynamic";
+export const dynamic = 'force-dynamic';
 
 type CategoryDetailPageProps = {
   params: Promise<{
@@ -15,10 +15,9 @@ export default async function CategoryDetailPage({
   params,
 }: CategoryDetailPageProps) {
   const { categorySlug } = await params;
-  const [category, places] = await Promise.all([
-    getCategoryBySlug(categorySlug),
-    getPlaces({ categorySlug }),
-  ]);
+
+  const category = (await getCategoryBySlug(categorySlug)) as any;
+  const places = (await getPlaces({ categorySlug })) as any;
 
   if (!category) {
     notFound();
@@ -34,7 +33,7 @@ export default async function CategoryDetailPage({
           {category.name}
         </h1>
         <p className="mt-4 text-lg text-muted-foreground">
-          {category.description ?? "Places matched to this discovery category."}
+          {category.description ?? 'Places matched to this discovery category.'}
         </p>
       </div>
       <PlaceGrid places={places} />

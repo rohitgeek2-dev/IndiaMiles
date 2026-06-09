@@ -1,7 +1,3 @@
-// import { HeroSection } from "@/components/home/HeroSection";
-// import { TrendingSection } from "@/components/home/TrendingSection";
-// import { CategorySection } from "@/components/home/CategorySection";
-
 import { CategorySection } from '@/components/home/CategoryGrid';
 import { HeroSection } from '@/components/home/HeroSection';
 import { TrendingSection } from '@/components/home/TrendingPlaces';
