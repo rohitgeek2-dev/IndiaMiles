@@ -1,11 +1,11 @@
-import Link from "next/link";
+import Link from 'next/link';
 
-import { getCategories } from "@/services/travel-service";
+import { getCategories } from '@/services/travel-service';
 
-export const dynamic = "force-dynamic";
+export const dynamic = 'force-dynamic';
 
 export default async function CategoriesPage() {
-  const categories = await getCategories();
+  const categories = (await getCategories()) as any[];
 
   return (
     <section className="container mx-auto px-4 py-12">
@@ -22,7 +22,7 @@ export default async function CategoriesPage() {
         </p>
       </div>
       <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-        {categories.map((category) => (
+        {categories.map((category: any) => (
           <Link
             key={category.id}
             href={`/categories/${category.slug}`}
@@ -30,7 +30,7 @@ export default async function CategoriesPage() {
           >
             <h2 className="text-2xl font-semibold">{category.name}</h2>
             <p className="mt-3 line-clamp-3 text-sm text-muted-foreground">
-              {category.description ?? "Browse places in this category."}
+              {category.description ?? 'Browse places in this category.'}
             </p>
           </Link>
         ))}
