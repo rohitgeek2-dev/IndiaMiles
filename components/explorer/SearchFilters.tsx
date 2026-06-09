@@ -1,11 +1,21 @@
-"use client";
+'use client';
 
-import { useRouter, useSearchParams } from "next/navigation";
-import { startTransition, useEffect, useState, useTransition } from "react";
-import type { Category, State } from "@prisma/client";
+import { useRouter, useSearchParams } from 'next/navigation';
+import { startTransition, useEffect, useState, useTransition } from 'react';
+type State = {
+  id: string;
+  name: string;
+  slug: string;
+};
 
-import { Input } from "@/components/ui/input";
-import { SmartSearch } from "@/components/discovery/SmartSearch";
+type Category = {
+  id: string;
+  name: string;
+  slug: string;
+};
+
+import { Input } from '@/components/ui/input';
+import { SmartSearch } from '@/components/discovery/SmartSearch';
 
 type SearchFiltersProps = {
   states: State[];
@@ -16,18 +26,18 @@ export function SearchFilters({ states, categories }: SearchFiltersProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [isPending, beginTransition] = useTransition();
-  const [query, setQuery] = useState(searchParams.get("q") ?? "");
-  const stateSlug = searchParams.get("state") ?? "";
-  const categorySlug = searchParams.get("category") ?? "";
+  const [query, setQuery] = useState(searchParams.get('q') ?? '');
+  const stateSlug = searchParams.get('state') ?? '';
+  const categorySlug = searchParams.get('category') ?? '';
 
   useEffect(() => {
     const timeoutId = window.setTimeout(() => {
       const nextParams = new URLSearchParams(searchParams);
 
       if (query.trim()) {
-        nextParams.set("q", query.trim());
+        nextParams.set('q', query.trim());
       } else {
-        nextParams.delete("q");
+        nextParams.delete('q');
       }
 
       beginTransition(() => {
@@ -65,7 +75,7 @@ export function SearchFilters({ states, categories }: SearchFiltersProps) {
       </div>
       <select
         value={stateSlug}
-        onChange={(event) => updateFilter("state", event.target.value)}
+        onChange={(event) => updateFilter('state', event.target.value)}
         className="h-9 rounded-md border border-input bg-background px-3 text-sm"
         aria-label="Filter by state"
       >
@@ -78,7 +88,7 @@ export function SearchFilters({ states, categories }: SearchFiltersProps) {
       </select>
       <select
         value={categorySlug}
-        onChange={(event) => updateFilter("category", event.target.value)}
+        onChange={(event) => updateFilter('category', event.target.value)}
         className="h-9 rounded-md border border-input bg-background px-3 text-sm"
         aria-label="Filter by category"
       >
