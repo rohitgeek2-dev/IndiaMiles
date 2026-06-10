@@ -28,8 +28,8 @@ async function safeRead<T>(
   fallback: T
 ): Promise<T> {
   if (!isDatabaseConfigured || !prisma) {
-  return fallback;
-}
+    return fallback;
+  }
 
   try {
     return await operation();
