@@ -27,9 +27,9 @@ async function safeRead<T>(
   operation: () => Promise<T>,
   fallback: T
 ): Promise<T> {
-  if (!isDatabaseConfigured) {
-    return fallback;
-  }
+  if (!isDatabaseConfigured || !prisma) {
+  return fallback;
+}
 
   try {
     return await operation();
@@ -42,7 +42,7 @@ async function safeRead<T>(
 export function getStates() {
   return safeRead(
     () =>
-      prisma.state.findMany({
+      prisma!.state.findMany({
         where: { isActive: true },
         orderBy: { name: "asc" },
       }),
@@ -53,7 +53,7 @@ export function getStates() {
 export function getCitiesByState(stateSlug: string) {
   return safeRead(
     () =>
-      prisma.city.findMany({
+      prisma!.city.findMany({
         where: {
           isActive: true,
           state: {
@@ -71,7 +71,7 @@ export function getCitiesByState(stateSlug: string) {
 export function getStateBySlug(stateSlug: string) {
   return safeRead(
     () =>
-      prisma.state.findFirst({
+      prisma!.state.findFirst({
         where: {
           slug: stateSlug,
           isActive: true,
@@ -100,7 +100,7 @@ export async function getCityByStateAndCitySlug(
 ): Promise<any> {
   return safeRead(
     () =>
-      prisma.city.findFirst({
+      prisma!.city.findFirst({
         where: {
           slug: citySlug,
           isActive: true,
@@ -125,7 +125,7 @@ export async function getCityByStateAndCitySlug(
 export function getPlacesByCity(citySlug: string) {
   return safeRead(
     () =>
-      prisma.place.findMany({
+      prisma!.place.findMany({
         where: {
           isActive: true,
           city: {
@@ -156,7 +156,7 @@ export function getPlaces(filters?: {
 
   return safeRead(
     () =>
-      prisma.place.findMany({
+      prisma!.place.findMany({
         where: {
           isActive: true,
           ...(query
@@ -194,7 +194,7 @@ export function getPlaces(filters?: {
 export function getPlaceBySlug(slug: string) {
   return safeRead(
     () =>
-      prisma.place.findFirst({
+      prisma!.place.findFirst({
         where: {
           slug,
           isActive: true,
@@ -208,7 +208,7 @@ export function getPlaceBySlug(slug: string) {
 export function getCategories() {
   return safeRead(
     () =>
-      prisma.category.findMany({
+      prisma!.category.findMany({
         where: { isActive: true },
         orderBy: { name: "asc" },
       }),
@@ -219,7 +219,7 @@ export function getCategories() {
 export function getCategoryBySlug(categorySlug: string) {
   return safeRead(
     () =>
-      prisma.category.findFirst({
+      prisma!.category.findFirst({
         where: {
           slug: categorySlug,
           isActive: true,
@@ -232,7 +232,7 @@ export function getCategoryBySlug(categorySlug: string) {
 export function getTrendingPlaces(limit = 6) {
   return safeRead(
     () =>
-      prisma.place.findMany({
+      prisma!.place.findMany({
         where: {
           isActive: true,
           trendingScore: { gt: 0 },
@@ -248,7 +248,7 @@ export function getTrendingPlaces(limit = 6) {
 export function getTopPlaces(limit = 6) {
   return safeRead(
     () =>
-      prisma.place.findMany({
+      prisma!.place.findMany({
         where: {
           isActive: true,
           isTop: true,
@@ -272,7 +272,7 @@ export async function getRecommendedPlaces(placeSlug: string, limit = 3) {
 
   return safeRead(
     () =>
-      prisma.place.findMany({
+      prisma!.place.findMany({
         where: {
           isActive: true,
           slug: { not: place.slug },
@@ -307,7 +307,7 @@ export async function getSearchSuggestions(query: string, limit = 8) {
   const [places, cities, states, categories] = await Promise.all([
     safeRead(
       () =>
-        prisma.place.findMany({
+        prisma!.place.findMany({
           where: {
             isActive: true,
             OR: [
@@ -326,7 +326,7 @@ export async function getSearchSuggestions(query: string, limit = 8) {
     ),
     safeRead(
       () =>
-        prisma.city.findMany({
+        prisma!.city.findMany({
           where: { isActive: true, name: { contains: normalizedQuery } },
           include: { state: true },
           orderBy: { name: "asc" },
@@ -336,7 +336,7 @@ export async function getSearchSuggestions(query: string, limit = 8) {
     ),
     safeRead(
       () =>
-        prisma.state.findMany({
+        prisma!.state.findMany({
           where: { isActive: true, name: { contains: normalizedQuery } },
           orderBy: { name: "asc" },
           take: limit,
@@ -345,7 +345,7 @@ export async function getSearchSuggestions(query: string, limit = 8) {
     ),
     safeRead(
       () =>
-        prisma.category.findMany({
+        prisma!.category.findMany({
           where: { isActive: true, name: { contains: normalizedQuery } },
           orderBy: { name: "asc" },
           take: limit,
@@ -387,43 +387,43 @@ export async function getSearchSuggestions(query: string, limit = 8) {
 }
 
 export const stateAdmin = {
-  list: () => prisma.state.findMany({ orderBy: { name: "asc" } }),
-  getById: (id: string) => prisma.state.findUnique({ where: { id } }),
-  create: (data: Prisma.StateCreateInput) => prisma.state.create({ data }),
+  list: () => prisma!.state.findMany({ orderBy: { name: "asc" } }),
+  getById: (id: string) => prisma!.state.findUnique({ where: { id } }),
+  create: (data: Prisma.StateCreateInput) => prisma!.state.create({ data }),
   update: (id: string, data: Prisma.StateUpdateInput) =>
-    prisma.state.update({ where: { id }, data }),
-  delete: (id: string) => prisma.state.delete({ where: { id } }),
+    prisma!.state.update({ where: { id }, data }),
+  delete: (id: string) => prisma!.state.delete({ where: { id } }),
 };
 
 export const cityAdmin = {
   list: () =>
-    prisma.city.findMany({ include: { state: true }, orderBy: { name: "asc" } }),
-  getById: (id: string) => prisma.city.findUnique({ where: { id } }),
-  create: (data: Prisma.CityCreateInput) => prisma.city.create({ data }),
+    prisma!.city.findMany({ include: { state: true }, orderBy: { name: "asc" } }),
+  getById: (id: string) => prisma!.city.findUnique({ where: { id } }),
+  create: (data: Prisma.CityCreateInput) => prisma!.city.create({ data }),
   update: (id: string, data: Prisma.CityUpdateInput) =>
-    prisma.city.update({ where: { id }, data }),
-  delete: (id: string) => prisma.city.delete({ where: { id } }),
+    prisma!.city.update({ where: { id }, data }),
+  delete: (id: string) => prisma!.city.delete({ where: { id } }),
 };
 
 export const placeAdmin = {
   list: () =>
-    prisma.place.findMany({
+    prisma!.place.findMany({
       include: placeExplorerInclude,
       orderBy: { name: "asc" },
     }),
   getById: (id: string) =>
-    prisma.place.findUnique({ where: { id }, include: categoryInclude }),
-  create: (data: Prisma.PlaceCreateInput) => prisma.place.create({ data }),
+    prisma!.place.findUnique({ where: { id }, include: categoryInclude }),
+  create: (data: Prisma.PlaceCreateInput) => prisma!.place.create({ data }),
   update: (id: string, data: Prisma.PlaceUpdateInput) =>
-    prisma.place.update({ where: { id }, data }),
-  delete: (id: string) => prisma.place.delete({ where: { id } }),
+    prisma!.place.update({ where: { id }, data }),
+  delete: (id: string) => prisma!.place.delete({ where: { id } }),
 };
 
 export const categoryAdmin = {
-  list: () => prisma.category.findMany({ orderBy: { name: "asc" } }),
-  getById: (id: string) => prisma.category.findUnique({ where: { id } }),
-  create: (data: Prisma.CategoryCreateInput) => prisma.category.create({ data }),
+  list: () => prisma!.category.findMany({ orderBy: { name: "asc" } }),
+  getById: (id: string) => prisma!.category.findUnique({ where: { id } }),
+  create: (data: Prisma.CategoryCreateInput) => prisma!.category.create({ data }),
   update: (id: string, data: Prisma.CategoryUpdateInput) =>
-    prisma.category.update({ where: { id }, data }),
-  delete: (id: string) => prisma.category.delete({ where: { id } }),
+    prisma!.category.update({ where: { id }, data }),
+  delete: (id: string) => prisma!.category.delete({ where: { id } }),
 };
