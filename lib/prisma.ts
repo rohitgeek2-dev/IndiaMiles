@@ -9,20 +9,13 @@ const globalForPrisma = globalThis as {
   prisma?: PrismaClient;
 };
 
-let prisma: PrismaClient | null = null;
-
-if (databaseUrl) {
-  const adapter = new PrismaPg(databaseUrl);
-
-  prisma =
-    globalForPrisma.prisma ??
+export const prisma = databaseUrl
+  ? globalForPrisma.prisma ??
     new PrismaClient({
-      adapter,
-    });
+      adapter: new PrismaPg(databaseUrl),
+    })
+  : ({} as PrismaClient);
 
-  if (process.env.NODE_ENV !== "production") {
-    globalForPrisma.prisma = prisma;
-  }
+if (databaseUrl && process.env.NODE_ENV !== "production") {
+  globalForPrisma.prisma = prisma;
 }
-
-export { prisma };
