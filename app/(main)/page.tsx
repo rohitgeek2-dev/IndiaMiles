@@ -26,7 +26,7 @@ import {
   luxuryHotels,
   featuredItineraries,
   festivals,
-o} from '@/lib/homepage-data';
+} from '@/lib/homepage-data';
 
 export const metadata = {
   title: 'India Miles | Discover Incredible India',
