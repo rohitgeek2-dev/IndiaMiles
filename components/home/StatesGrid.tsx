@@ -1,13 +1,55 @@
 'use client';
 
+import { useState, useCallback } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { MapPin } from 'lucide-react';
+import { ImageOff, MapPin } from 'lucide-react';
 import type { HomepageState } from '@/lib/homepage-data';
 
 type ExploreStatesProps = {
   states: HomepageState[];
 };
+
+function StateImage({ src, alt }: { src: string; alt: string }) {
+  const [currentSrc, setCurrentSrc] = useState(src);
+  const [triedFallback, setTriedFallback] = useState(false);
+  const [isError, setIsError] = useState(false);
+
+  const handleError = useCallback(() => {
+    if (!triedFallback) {
+      // Try a place-oriented fallback image (search-based) using Unsplash source.
+      // This helps when hosted images are blocked or missing.
+      const query = encodeURIComponent(alt || 'travel');
+      const fallback = `https://source.unsplash.com/1200x800/?${query}`;
+      setCurrentSrc(fallback);
+      setTriedFallback(true);
+      return;
+    }
+
+    setIsError(true);
+  }, [triedFallback, alt]);
+
+  if (isError) {
+    return (
+      <div className="flex h-full w-full items-center justify-center bg-muted">
+        <div className="flex flex-col items-center gap-2 text-muted-foreground">
+          <ImageOff className="h-10 w-10" />
+          <span className="text-xs">Image unavailable</span>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <img
+      src={currentSrc}
+      alt={alt}
+      loading="lazy"
+      onError={handleError}
+      className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+    />
+  );
+}
 
 export function ExploreStates({ states }: ExploreStatesProps) {
   return (
@@ -18,7 +60,7 @@ export function ExploreStates({ states }: ExploreStatesProps) {
             Explore by State
           </p>
           <h2 className="mt-3 text-4xl font-bold text-foreground">
-            Discover India’s most iconic regions.
+            Discover India's most iconic regions.
           </h2>
         </div>
         <Link
@@ -40,11 +82,7 @@ export function ExploreStates({ states }: ExploreStatesProps) {
             className="group overflow-hidden rounded-[2rem] border border-white/10 bg-white/5 shadow-[0_30px_80px_rgba(15,23,42,0.08)] transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
           >
             <div className="relative h-64 overflow-hidden">
-              <img
-                src={state.imageUrl}
-                alt={state.name}
-                className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
-              />
+              <StateImage src={state.imageUrl} alt={state.name} />
               <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent" />
               <div className="absolute left-6 bottom-6 text-white">
                 <p className="text-xs uppercase tracking-[0.3em] text-white/75">

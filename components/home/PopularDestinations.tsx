@@ -1,14 +1,50 @@
 'use client';
 
+import { useState, useCallback } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { ArrowRight, MapPin, Star } from 'lucide-react';
+import { ArrowRight, ImageOff, Star } from 'lucide-react';
 import type { HomepageDestination } from '@/lib/homepage-data';
 import { Button } from '@/components/ui/button';
 
 type PopularDestinationsProps = {
   destinations: HomepageDestination[];
 };
+
+function DestinationImage({
+  src,
+  alt,
+}: {
+  src: string;
+  alt: string;
+}) {
+  const [isError, setIsError] = useState(false);
+
+  const handleError = useCallback(() => {
+    setIsError(true);
+  }, []);
+
+  if (isError) {
+    return (
+      <div className="flex h-full w-full items-center justify-center bg-muted">
+        <div className="flex flex-col items-center gap-2 text-muted-foreground">
+          <ImageOff className="h-10 w-10" />
+          <span className="text-xs">Image unavailable</span>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <img
+      src={src}
+      alt={alt}
+      loading="lazy"
+      onError={handleError}
+      className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+    />
+  );
+}
 
 export function PopularDestinations({
   destinations,
@@ -40,10 +76,9 @@ export function PopularDestinations({
             className="group overflow-hidden rounded-[2rem] border border-white/10 bg-white/5 shadow-[0_25px_80px_rgba(15,23,42,0.12)] transition-transform duration-300 hover:-translate-y-1"
           >
             <div className="relative h-72 overflow-hidden">
-              <img
+              <DestinationImage
                 src={destination.imageUrl}
                 alt={destination.name}
-                className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
               <div className="absolute left-6 bottom-6 text-white">

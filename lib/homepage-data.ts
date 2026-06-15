@@ -60,7 +60,7 @@ export const homepageDestinations: HomepageDestination[] = [
     rating: '4.9',
     reviews: '1.8k reviews',
     imageUrl:
-      'https://images.unsplash.com/photo-1611449781731-7e3b4e859c62?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1599661046289-e31897846e41?auto=format&fit=crop&w=1200&q=80',
     description:
       'Experience the pink city with exclusive palace stays, royal cuisine, and timeless culture.',
     href: '/states/rajasthan',
@@ -73,7 +73,7 @@ export const homepageDestinations: HomepageDestination[] = [
     rating: '4.8',
     reviews: '1.3k reviews',
     imageUrl:
-      'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1593693397690-362cb9666fc2?auto=format&fit=crop&w=1200&q=80',
     description:
       'Drift through serene canals, private houseboats, and signature Ayurvedic rituals.',
     href: '/states/kerala',
@@ -86,7 +86,7 @@ export const homepageDestinations: HomepageDestination[] = [
     rating: '4.7',
     reviews: '2.1k reviews',
     imageUrl:
-      'https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80',
     description:
       'Sunset beach villas, private cabanas, and premium coastal dining experiences.',
     href: '/states/goa',
@@ -99,7 +99,7 @@ export const homepageDestinations: HomepageDestination[] = [
     rating: '4.9',
     reviews: '940 reviews',
     imageUrl:
-      'https://images.unsplash.com/photo-1526481280695-3e5a8d150a0e?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1200&q=80',
     description:
       'Curated mountain lodges, sunrise treks, and serene forest hideaways.',
     href: '/states/uttarakhand',
@@ -112,7 +112,7 @@ export const homepageStates: HomepageState[] = [
     name: 'Rajasthan',
     description: 'Timeless palaces, desert luxury, and royal heritage journeys.',
     imageUrl:
-      'https://images.unsplash.com/photo-1545060894-65f426ee6b6b?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1599661046289-e31897846e41?auto=format&fit=crop&w=1200&q=80',
     href: '/states/rajasthan',
   },
   {
@@ -120,7 +120,7 @@ export const homepageStates: HomepageState[] = [
     name: 'Kerala',
     description: 'Backwaters, spice-lined resorts, and lush tropical escapes.',
     imageUrl:
-      'https://images.unsplash.com/photo-1515169067865-5387ec356754?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1593693397690-362cb9666fc2?auto=format&fit=crop&w=1200&q=80',
     href: '/states/kerala',
   },
   {
@@ -135,24 +135,21 @@ export const homepageStates: HomepageState[] = [
     id: 'himachal',
     name: 'Himachal Pradesh',
     description: 'Pine forests, boutique hill resorts, and alpine wellness retreats.',
-    imageUrl:
-      'https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=1200&q=80',
+    imageUrl: '/images/himachal.jpg',
     href: '/states/himachal-pradesh',
   },
   {
     id: 'maharashtra',
     name: 'Maharashtra',
     description: 'Luxury city stays, coastal escapes, and cultural heritage tours.',
-    imageUrl:
-      'https://images.unsplash.com/photo-1529230971539-6c3f0a0a726a?auto=format&fit=crop&w=1200&q=80',
+    imageUrl: '/images/maharashtra.jpg',
     href: '/states/maharashtra',
   },
   {
     id: 'tamil-nadu',
     name: 'Tamil Nadu',
     description: 'Spiritual temples, palace stays, and South India elegance.',
-    imageUrl:
-      'https://images.unsplash.com/photo-1513426155444-5f2fa587d1b9?auto=format&fit=crop&w=1200&q=80',
+    imageUrl: '/images/tamilnadu.jpg',
     href: '/states/tamil-nadu',
   },
 ];
@@ -224,7 +221,7 @@ export const homepageExperiences: HomepageExperience[] = [
     tag: 'Heritage Luxury',
     price: 'From ₹18,500 / night',
     imageUrl:
-      'https://images.unsplash.com/photo-1523861759679-b27018e1bf44?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1599661046289-e31897846e41?auto=format&fit=crop&w=1200&q=80',
     href: '/destinations/jaipur-palace',
   },
   {
@@ -234,7 +231,7 @@ export const homepageExperiences: HomepageExperience[] = [
     tag: 'Wellness Retreat',
     price: 'From ₹16,000 / night',
     imageUrl:
-      'https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1593693397690-362cb9666fc2?auto=format&fit=crop&w=1200&q=80',
     href: '/destinations/kerala-backwaters',
   },
   {
@@ -265,7 +262,7 @@ export const homepageTestimonials: Testimonial[] = [
     name: 'Arjun Mehta',
     role: 'Executive Planner',
     quote:
-      'The curated experiences and seamless planning made our family trip an elevated discovery of India’s beauty.',
+      'The curated experiences and seamless planning made our family trip an elevated discovery of India\'s beauty.',
     rating: 5,
     avatarUrl:
       'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=256&q=80',
@@ -278,7 +275,7 @@ export const homepageTestimonials: Testimonial[] = [
       'From temple journeys to beachside luxury, the service felt modern and deeply rooted in Indian heritage.',
     rating: 5,
     avatarUrl:
-      'https://images.unsplash.com/photo-1544001313-94ddf0286df2?auto=format&fit=crop&w=256&q=80',
+      'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=256&q=80',
   },
 ];
 

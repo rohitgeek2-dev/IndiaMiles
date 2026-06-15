@@ -7,11 +7,11 @@ import { Button } from '@/components/ui/button';
 
 export function HeroSection() {
   return (
-    <section className="relative overflow-hidden bg-slate-950 text-white">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(59,130,246,0.35),_transparent_30%)]" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,_rgba(245,158,11,0.25),_transparent_28%)]" />
-      <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1600&q=80')] bg-cover bg-center opacity-30" />
-      <div className="absolute inset-0 bg-gradient-to-b from-slate-950/80 via-slate-950/80 to-slate-950/95" />
+    <section className="relative overflow-hidden bg-slate-950 text-white font-sans">
+      <div className="absolute inset-0 bg-[url('/images/hero.png')] bg-cover bg-center" />
+      <div className="absolute inset-0 bg-slate-950/65" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(255,255,255,0.12),_transparent_25%),radial-gradient(circle_at_bottom_right,_rgba(255,255,255,0.06),_transparent_30%)]" />
+      <div className="absolute inset-0 bg-gradient-to-br from-slate-950/20 via-slate-950/55 to-slate-950/90" />
 
       <div className="container relative mx-auto px-4 py-24 md:py-32">
         <div className="mx-auto max-w-4xl text-center">
@@ -42,7 +42,9 @@ export function HeroSection() {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="mx-auto mt-6 max-w-2xl text-base leading-8 text-slate-200 sm:text-lg"
           >
-            Curated luxury escapes, cultural expeditions, and seamless travel planning designed for modern explorers who want unforgettable Indian experiences.
+            Curated luxury escapes, cultural expeditions, and seamless travel
+            planning designed for modern explorers who want unforgettable Indian
+            experiences.
           </motion.p>
 
           <motion.div
@@ -57,7 +59,7 @@ export function HeroSection() {
             <Button
               asChild
               variant="secondary"
-              className="rounded-full px-8 py-3 text-base text-white/90"
+              className="rounded-full px-8 py-3 text-base text-black/90 dark:text-white/90"
             >
               <Link href="/destinations">Explore Destinations</Link>
             </Button>
@@ -85,7 +87,9 @@ export function HeroSection() {
                 transition={{ duration: 0.7, delay: 0.35 + index * 0.08 }}
                 className="rounded-[2rem] border border-white/10 bg-slate-950/70 px-6 py-5 text-left shadow-xl"
               >
-                <p className="text-3xl font-semibold text-white">{item.value}</p>
+                <p className="text-3xl font-semibold text-white">
+                  {item.value}
+                </p>
                 <p className="mt-2 text-sm uppercase tracking-[0.3em] text-slate-300">
                   {item.label}
                 </p>
