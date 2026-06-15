@@ -2,72 +2,65 @@
 
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { Menu, ChevronDown, Compass, MapPin, Globe } from 'lucide-react';
+import { Menu, ChevronDown, Sparkles, Heart, Search, MapPin, Compass, Landmark, Palette, Sun, Mountain, Gem, ArrowRight } from 'lucide-react';
 import { DarkModeToggle } from '@/components/common/DarkModeToggle';
 
-const navGroups = [
+const megaMenuItems = [
   {
     title: 'Destinations',
     description: 'Luxury escapes across India',
+    icon: MapPin,
     items: [
-      {
-        name: 'Rajasthan',
-        href: '/states/rajasthan',
-        meta: 'Palaces & deserts',
-      },
-      { name: 'Kerala', href: '/states/kerala', meta: 'Backwaters & wellness' },
-      { name: 'Goa', href: '/states/goa', meta: 'Beachfront luxury' },
-    ],
-  },
-  {
-    title: 'States',
-    description: 'Curated regional journeys',
-    items: [
-      {
-        name: 'Himachal Pradesh',
-        href: '/states/himachal-pradesh',
-        meta: 'Mountain retreats',
-      },
-      {
-        name: 'Uttarakhand',
-        href: '/states/uttarakhand',
-        meta: 'Himalayan serenity',
-      },
-      {
-        name: 'Maharashtra',
-        href: '/states/maharashtra',
-        meta: 'City escapes & coast',
-      },
+      { name: 'Rajasthan', href: '/states/rajasthan', meta: 'Palaces & deserts', image: 'https://images.unsplash.com/photo-1599661046289-e31897846e41?auto=format&fit=crop&w=100&q=80' },
+      { name: 'Kerala', href: '/states/kerala', meta: 'Backwaters & wellness', image: 'https://images.unsplash.com/photo-1593693397690-362cb9666fc2?auto=format&fit=crop&w=100&q=80' },
+      { name: 'Goa', href: '/states/goa', meta: 'Beachfront luxury', image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=100&q=80' },
+      { name: 'Himachal Pradesh', href: '/states/himachal-pradesh', meta: 'Mountain retreats', image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=100&q=80' },
+      { name: 'Uttarakhand', href: '/states/uttarakhand', meta: 'Himalayan serenity', image: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=100&q=80' },
+      { name: 'Ladakh', href: '/states/ladakh', meta: 'High-altitude adventure', image: 'https://images.unsplash.com/photo-1486911278844-a81c8a14fdb0?auto=format&fit=crop&w=100&q=80' },
     ],
   },
   {
     title: 'Experiences',
     description: 'Signature travel moments',
+    icon: Compass,
     items: [
-      {
-        name: 'Beach Escapes',
-        href: '/categories/beaches',
-        meta: 'Coastal luxury',
-      },
-      {
-        name: 'Heritage Tours',
-        href: '/categories/heritage-sites',
-        meta: 'Royal legacies',
-      },
-      {
-        name: 'Wellness Retreats',
-        href: '/categories/wildlife',
-        meta: 'Nature & calm',
-      },
+      { name: 'Heritage Tours', href: '/categories/heritage-sites', meta: 'Royal legacies', image: 'https://images.unsplash.com/photo-1566837945700-30057527ade0?auto=format&fit=crop&w=100&q=80' },
+      { name: 'Beach Escapes', href: '/categories/beaches', meta: 'Coastal luxury', image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=100&q=80' },
+      { name: 'Wellness Retreats', href: '/categories/wellness', meta: 'Nature & calm', image: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&w=100&q=80' },
+      { name: 'Wildlife Safaris', href: '/categories/wildlife', meta: 'Jungle encounters', image: 'https://images.unsplash.com/photo-1549366021-9f761d450615?auto=format&fit=crop&w=100&q=80' },
+      { name: 'Culinary Trails', href: '/categories/culinary', meta: 'Gourmet journeys', image: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=100&q=80' },
+      { name: 'Adventure', href: '/categories/adventure', meta: 'Thrill & explore', image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=100&q=80' },
     ],
   },
 ];
 
+const navLinks = [
+  { name: 'Destinations', href: '/destinations' },
+  { name: 'Experiences', href: '/experiences' },
+  { name: 'Hotels', href: '/hotels' },
+  { name: 'Journal', href: '/journal' },
+];
+
 export function Header() {
+  const [isScrolled, setIsScrolled] = useState(false);
   const [openMenu, setOpenMenu] = useState<string | null>(null);
   const menuRef = useRef<HTMLDivElement | null>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -75,165 +68,240 @@ export function Header() {
         setOpenMenu(null);
       }
     };
-
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  if (!mounted) return null;
+
   return (
-    <header className="sticky top-0 z-50 border-b border-white/10 bg-background/80 backdrop-blur-3xl shadow-[0_25px_80px_rgba(15,23,42,0.12)]">
+    <header
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+        isScrolled
+          ? 'bg-background/80 backdrop-blur-3xl shadow-[0_10px_40px_rgba(15,23,42,0.08)] border-b border-border/50'
+          : 'bg-transparent'
+      }`}
+    >
       <div className="container mx-auto flex h-20 items-center justify-between gap-4 px-4">
-        <Link href="/" className="flex items-center gap-3">
-          <div className="flex h-12 w-12 items-center justify-center rounded-3xl bg-gradient-to-br from-amber-500 via-orange-500 to-teal-600 text-white shadow-lg shadow-amber-500/20">
-            <span className="text-lg font-bold">IM</span>
+        {/* Logo */}
+        <Link href="/" className="flex items-center gap-3 shrink-0">
+          <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-500 via-orange-500 to-teal-600 text-white shadow-lg shadow-amber-500/20">
+            <span className="text-base font-bold">IM</span>
           </div>
           <div className="flex flex-col leading-none">
-            <span className="text-lg font-semibold tracking-tight">
+            <span className={`text-base font-semibold tracking-tight transition-colors ${isScrolled ? 'text-foreground' : 'text-white'}`}>
               India Miles
             </span>
-            <span className="text-xs uppercase tracking-[0.35em] text-muted-foreground">
+            <span className={`text-[10px] uppercase tracking-[0.35em] transition-colors ${isScrolled ? 'text-muted-foreground' : 'text-white/60'}`}>
               Luxury travel
             </span>
           </div>
         </Link>
 
-        <nav
-          className="hidden flex-1 items-center justify-center gap-3 md:flex"
-          ref={menuRef}
-        >
-          {navGroups.map((group) => (
-            <div key={group.title} className="relative">
-              <button
-                onClick={() =>
-                  setOpenMenu(openMenu === group.title ? null : group.title)
-                }
-                className="inline-flex cursor-pointer items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-foreground transition hover:bg-white/15 focus:outline-none focus:ring-0 focus:ring-none"
-              >
-                {group.title}
-                <ChevronDown className="h-3 w-3 text-muted-foreground" />
-              </button>
+        {/* Navigation - Desktop */}
+        <nav className="hidden items-center gap-1 md:flex" ref={menuRef}>
+          {megaMenuItems.map((group) => {
+            const Icon = group.icon;
+            const isOpen = openMenu === group.title;
 
-              <div
-                className={`absolute left-0 top-full mt-3 min-w-[20rem] flex-col gap-3 rounded-[2rem] border border-white/10 bg-background/95 p-5 shadow-2xl backdrop-blur-xl transition-all duration-300 ${
-                  openMenu === group.title
-                    ? 'flex opacity-100 visible'
-                    : 'hidden opacity-0 invisible'
-                }`}
-              >
-                <div className="flex items-center justify-between gap-4">
-                  <p className="text-sm font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-                    {group.title}
-                  </p>
-                </div>
-                <div className="grid gap-2">
-                  {group.items.map((item) => (
-                    <Link
-                      key={item.name}
-                      href={item.href}
-                      className="rounded-3xl px-4 py-3 transition hover:bg-white/10"
-                      onClick={() => setOpenMenu(null)}
+            return (
+              <div key={group.title} className="relative">
+                <button
+                  onClick={() => setOpenMenu(isOpen ? null : group.title)}
+                  onMouseEnter={() => setOpenMenu(group.title)}
+                  className={`inline-flex cursor-pointer items-center gap-1.5 rounded-full px-4 py-2 text-sm font-medium transition-all ${
+                    isScrolled
+                      ? 'text-foreground hover:bg-muted'
+                      : 'text-white/80 hover:bg-white/10'
+                  }`}
+                >
+                  <Icon className="h-4 w-4" />
+                  {group.title}
+                  <ChevronDown className={`h-3 w-3 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />
+                </button>
+
+                <AnimatePresence>
+                  {isOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                      transition={{ duration: 0.2 }}
+                      onMouseLeave={() => setOpenMenu(null)}
+                      className="absolute left-0 top-full mt-3 w-[480px] overflow-hidden rounded-2xl border border-border/50 bg-card shadow-2xl backdrop-blur-3xl"
                     >
-                      <p className="font-semibold text-foreground">
-                        {item.name}
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        {item.meta}
-                      </p>
-                    </Link>
-                  ))}
-                </div>
+                      <div className="p-5">
+                        <div className="mb-4 flex items-center justify-between">
+                          <div>
+                            <p className="text-sm font-semibold text-foreground">{group.title}</p>
+                            <p className="text-xs text-muted-foreground">{group.description}</p>
+                          </div>
+                          <Button asChild variant="ghost" size="sm" className="rounded-full text-xs">
+                            <Link href={`/${group.title.toLowerCase()}`}>
+                              View all
+                              <ArrowRight className="ml-1 h-3 w-3" />
+                            </Link>
+                          </Button>
+                        </div>
+                        <div className="grid grid-cols-2 gap-2">
+                          {group.items.map((item) => (
+                            <Link
+                              key={item.name}
+                              href={item.href}
+                              onClick={() => setOpenMenu(null)}
+                              className="group flex items-center gap-3 rounded-xl p-3 transition hover:bg-muted"
+                            >
+                              <div className="h-12 w-12 shrink-0 overflow-hidden rounded-lg">
+                                <img src={item.image} alt={item.name} className="h-full w-full object-cover" />
+                              </div>
+                              <div>
+                                <p className="text-sm font-semibold text-foreground group-hover:text-teal-500 transition-colors">{item.name}</p>
+                                <p className="text-xs text-muted-foreground">{item.meta}</p>
+                              </div>
+                            </Link>
+                          ))}
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
-            </div>
+            );
+          })}
+
+          {/* Simple nav links */}
+          {navLinks.map((link) => (
+            <Link
+              key={link.name}
+              href={link.href}
+              className={`rounded-full px-4 py-2 text-sm font-medium transition-all ${
+                isScrolled
+                  ? 'text-foreground hover:bg-muted'
+                  : 'text-white/80 hover:bg-white/10'
+              }`}
+            >
+              {link.name}
+            </Link>
           ))}
         </nav>
 
+        {/* Actions */}
         <div className="flex items-center gap-2">
           <DarkModeToggle />
+          
+          {/* Search */}
+          <button className={`flex h-9 w-9 items-center justify-center rounded-full border transition-all ${
+            isScrolled 
+              ? 'border-border bg-card hover:bg-muted text-foreground' 
+              : 'border-white/20 bg-white/5 hover:bg-white/10 text-white'
+          }`}>
+            <Search className="h-4 w-4" />
+          </button>
+
+          {/* Wishlist */}
+          <button className={`hidden md:flex h-9 w-9 items-center justify-center rounded-full border transition-all ${
+            isScrolled 
+              ? 'border-border bg-card hover:bg-muted text-foreground' 
+              : 'border-white/20 bg-white/5 hover:bg-white/10 text-white'
+          }`}>
+            <Heart className="h-4 w-4" />
+          </button>
+
+          {/* AI Trip Planner */}
           <Button
             asChild
-            variant="ghost"
-            size="icon"
-            className="hidden rounded-full md:inline-flex cursor-pointer"
+            className="hidden lg:inline-flex rounded-full px-5 py-2 text-sm font-semibold bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 border-0 shadow-lg shadow-amber-500/20"
           >
-            <Link href="/search">
-              <Globe className="h-4 w-4" />
+            <Link href="/plan">
+              <Sparkles className="mr-1.5 h-4 w-4" />
+              AI Trip Planner
             </Link>
           </Button>
-          <Button
-            asChild
-            variant="default"
-            className="hidden rounded-full px-6 py-2 font-semibold md:inline-flex"
-          >
-            <Link href="/plan">Plan Your Trip</Link>
-          </Button>
 
+          {/* Mobile Menu */}
           <Sheet>
             <SheetTrigger asChild>
               <Button
                 variant="ghost"
                 size="icon"
-                className="md:hidden rounded-full bg-white/10"
+                className={`md:hidden rounded-full ${
+                  isScrolled 
+                    ? 'bg-muted text-foreground' 
+                    : 'bg-white/10 text-white hover:bg-white/20'
+                }`}
               >
                 <Menu className="h-5 w-5" />
               </Button>
             </SheetTrigger>
             <SheetContent
               side="right"
-              className="rounded-[2rem] border border-white/10 bg-background/95 p-6 shadow-2xl backdrop-blur-3xl"
+              className="rounded-[2rem] border border-border/50 bg-card p-6 shadow-2xl backdrop-blur-3xl"
             >
               <div className="mb-6 flex items-center justify-between">
                 <Link href="/" className="flex items-center gap-3">
-                  <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-500 via-orange-500 to-teal-600 text-white">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-500 via-orange-500 to-teal-600 text-white">
                     IM
                   </div>
                   <div>
-                    <p className="font-semibold">India Miles</p>
-                    <p className="text-xs text-muted-foreground">
-                      Premium travel
-                    </p>
+                    <p className="font-semibold text-foreground">India Miles</p>
+                    <p className="text-xs text-muted-foreground">Premium travel</p>
                   </div>
                 </Link>
                 <DarkModeToggle />
               </div>
-              <div className="space-y-4">
-                {navGroups.map((group) => (
-                  <details
-                    key={group.title}
-                    className="rounded-3xl border border-white/10 bg-white/5"
-                  >
-                    <summary className="flex cursor-pointer items-center justify-between gap-2 px-4 py-4 text-sm font-semibold">
-                      {group.title}
-                      <ChevronDown className="h-4 w-4" />
-                    </summary>
-                    <div className="space-y-2 border-t border-white/10 px-4 py-3">
+
+              <div className="space-y-6">
+                {megaMenuItems.map((group) => (
+                  <div key={group.title}>
+                    <p className="mb-2 text-sm font-semibold text-foreground">{group.title}</p>
+                    <div className="space-y-1">
                       {group.items.map((item) => (
                         <Link
                           key={item.name}
                           href={item.href}
-                          className="block rounded-2xl px-3 py-3 text-sm transition hover:bg-white/10"
+                          className="flex items-center gap-3 rounded-xl px-3 py-2.5 transition hover:bg-muted"
                         >
-                          <p className="font-medium">{item.name}</p>
-                          <p className="text-xs text-muted-foreground">
-                            {item.meta}
-                          </p>
+                          <div className="h-10 w-10 shrink-0 overflow-hidden rounded-lg">
+                            <img src={item.image} alt={item.name} className="h-full w-full object-cover" />
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium text-foreground">{item.name}</p>
+                            <p className="text-xs text-muted-foreground">{item.meta}</p>
+                          </div>
                         </Link>
                       ))}
                     </div>
-                  </details>
+                  </div>
                 ))}
+
+                {/* Mobile nav links */}
+                <div className="space-y-1">
+                  {navLinks.map((link) => (
+                    <Link
+                      key={link.name}
+                      href={link.href}
+                      className="block rounded-xl px-4 py-3 text-sm font-medium text-foreground transition hover:bg-muted"
+                    >
+                      {link.name}
+                    </Link>
+                  ))}
+                </div>
               </div>
+
               <div className="mt-6 space-y-3">
                 <Link
-                  href="/search"
-                  className="block rounded-full border border-white/10 bg-white/5 px-5 py-3 text-center text-sm font-semibold transition hover:bg-white/10"
+                  href="/plan"
+                  className="flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 px-5 py-3 text-sm font-semibold text-white shadow-lg"
                 >
-                  Search
+                  <Sparkles className="h-4 w-4" />
+                  AI Trip Planner
                 </Link>
                 <Link
-                  href="/plan"
-                  className="block rounded-full bg-primary px-5 py-3 text-center text-sm font-semibold text-white shadow-lg transition hover:bg-primary/90"
+                  href="/search"
+                  className="flex items-center justify-center gap-2 rounded-full border border-border/50 bg-card px-5 py-3 text-sm font-semibold text-foreground transition hover:bg-muted"
                 >
-                  Plan Your Trip
+                  <Search className="h-4 w-4" />
+                  Search
                 </Link>
               </div>
             </SheetContent>

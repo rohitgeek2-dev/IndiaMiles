@@ -1,19 +1,32 @@
-import { CallToActionBanner } from '@/components/home/CallToActionBanner';
-import { CategorySection } from '@/components/home/CategoryGrid';
-import { FeaturedExperiences } from '@/components/home/FeaturedExperiences';
 import { HeroSection } from '@/components/home/HeroSection';
-import { NewsletterSection } from '@/components/home/NewsletterSection';
-import { StatsSection } from '@/components/home/StatsSection';
-import { TestimonialsSection } from '@/components/home/TestimonialsSection';
-import { ExploreStates } from '@/components/home/StatesGrid';
 import { PopularDestinations } from '@/components/home/PopularDestinations';
+import { TravelThemes } from '@/components/home/TravelThemes';
+import { PersonalizedRecs } from '@/components/home/PersonalizedRecs';
+import { SocialProofSection } from '@/components/home/SocialProofSection';
+import { StorytellingSection } from '@/components/home/StorytellingSection';
+import { DreamJourney } from '@/components/home/DreamJourney';
+import { IndiaMapSection } from '@/components/home/IndiaMapSection';
+import { BestTimeSection } from '@/components/home/BestTimeSection';
+import { LuxuryHotelCollection } from '@/components/home/LuxuryHotelCollection';
+import { CuratedItinerariesSection } from '@/components/home/CuratedItinerariesSection';
+import { FestivalsSection } from '@/components/home/FestivalsSection';
+import { ConciergeSection } from '@/components/home/ConciergeSection';
+import { InspirationGallery } from '@/components/home/InspirationGallery';
+import { NewsletterSection } from '@/components/home/NewsletterSection';
+import { CallToActionBanner } from '@/components/home/CallToActionBanner';
 import {
-  homepageCategories,
   homepageDestinations,
-  homepageExperiences,
-  homepageStates,
+  homepageThemes,
+  recommendedForYou,
+  trendingThisMonth,
   homepageTestimonials,
-} from '@/lib/homepage-data';
+  reviewStats,
+  journalStories,
+  seasonalCalendar,
+  luxuryHotels,
+  featuredItineraries,
+  festivals,
+o} from '@/lib/homepage-data';
 
 export const metadata = {
   title: 'India Miles | Discover Incredible India',
@@ -24,14 +37,58 @@ export const metadata = {
 export default function HomePage() {
   return (
     <>
+      {/* 1. Hero - Premium Brand Introduction */}
       <HeroSection />
+
+      {/* 2. Interactive India Map */}
+      <IndiaMapSection />
+
+      {/* 3. Popular Destinations */}
       <PopularDestinations destinations={homepageDestinations} />
-      <ExploreStates states={homepageStates} />
-      <CategorySection categories={homepageCategories} />
-      <FeaturedExperiences experiences={homepageExperiences} />
-      <StatsSection />
-      <TestimonialsSection testimonials={homepageTestimonials} />
+
+      {/* 4. Travel Themes - Ways to Travel */}
+      <TravelThemes themes={homepageThemes} />
+
+      {/* 5. Personalized Recommendations */}
+      <PersonalizedRecs
+        recommendedForYou={recommendedForYou}
+        trendingThisMonth={trendingThisMonth}
+      />
+
+      {/* 6. Social Proof - Testimonials & Reviews */}
+      <SocialProofSection
+        testimonials={homepageTestimonials}
+        reviewStats={reviewStats}
+      />
+
+      {/* 7. Editorial Storytelling - Magazine Layout */}
+      <StorytellingSection stories={journalStories} />
+
+      {/* 8. Best Time To Visit India */}
+      <BestTimeSection calendar={seasonalCalendar} />
+
+      {/* 9. Luxury Hotel Collection */}
+      <LuxuryHotelCollection hotels={luxuryHotels} />
+
+      {/* 10. Curated Itineraries */}
+      <CuratedItinerariesSection itineraries={featuredItineraries} />
+
+      {/* 11. Dream Journey - Multi-Step Trip Builder */}
+      <DreamJourney />
+
+      {/* 12. Festivals & Events */}
+      <FestivalsSection festivals={festivals} />
+
+      {/* 13. Concierge Assistance */}
+      <ConciergeSection />
+
+      {/* 14. Travel Inspiration Gallery */}
+      <InspirationGallery />
+
+      {/* 15. Newsletter */}
       <NewsletterSection />
+
+      {/* 16. Final CTA */}
       <CallToActionBanner />
     </>
   );

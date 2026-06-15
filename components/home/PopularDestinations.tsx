@@ -3,7 +3,7 @@
 import { useState, useCallback } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { ArrowRight, ImageOff, Star } from 'lucide-react';
+import { ArrowRight, ImageOff, Star, Clock, MapPin, Tag, Calendar, Sparkles } from 'lucide-react';
 import type { HomepageDestination } from '@/lib/homepage-data';
 import { Button } from '@/components/ui/button';
 
@@ -11,108 +11,165 @@ type PopularDestinationsProps = {
   destinations: HomepageDestination[];
 };
 
-function DestinationImage({
-  src,
-  alt,
-}: {
-  src: string;
-  alt: string;
-}) {
+function DestinationCard({ destination, index }: { destination: HomepageDestination; index: number }) {
   const [isError, setIsError] = useState(false);
-
-  const handleError = useCallback(() => {
-    setIsError(true);
-  }, []);
-
-  if (isError) {
-    return (
-      <div className="flex h-full w-full items-center justify-center bg-muted">
-        <div className="flex flex-col items-center gap-2 text-muted-foreground">
-          <ImageOff className="h-10 w-10" />
-          <span className="text-xs">Image unavailable</span>
-        </div>
-      </div>
-    );
-  }
+  const handleError = useCallback(() => setIsError(true), []);
 
   return (
-    <img
-      src={src}
-      alt={alt}
-      loading="lazy"
-      onError={handleError}
-      className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
-    />
+    <motion.article
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.2 }}
+      transition={{ duration: 0.6, delay: index * 0.08 }}
+      className="group relative overflow-hidden rounded-[2rem] bg-white/[0.03] border border-white/10 backdrop-blur-sm transition-all duration-500 hover:-translate-y-2 shadow-luxury hover:shadow-luxury-xl"
+    >
+      {/* Image Container */}
+      <div className="relative h-80 overflow-hidden">
+        {isError ? (
+          <div className="flex h-full w-full items-center justify-center bg-[#071228]">
+            <div className="flex flex-col items-center gap-2 text-white/30">
+              <ImageOff className="h-10 w-10" />
+              <span className="text-xs">Image unavailable</span>
+            </div>
+          </div>
+        ) : (
+          <img
+            src={destination.imageUrl}
+            alt={destination.name}
+            loading="lazy"
+            onError={handleError}
+            className="h-full w-full object-cover transition duration-700 group-hover:scale-110"
+          />
+        )}
+        <div className="absolute inset-0 bg-gradient-to-t from-[#030712] via-[#030712]/30 to-transparent" />
+        
+        {/* Rating Badge */}
+        <div className="absolute right-4 top-4 flex items-center gap-1.5 rounded-full bg-[#030712]/60 backdrop-blur-md px-3 py-1.5 text-xs font-medium text-white border border-white/10">
+          <Star className="h-3.5 w-3.5 text-gold" />
+          {destination.rating}
+        </div>
+
+        {/* Content Overlay */}
+        <div className="absolute bottom-0 left-0 right-0 p-6">
+          <p className="text-xs uppercase tracking-[0.25em] text-gold-light/90 font-medium">
+            {destination.category}
+          </p>
+          <h3 className="mt-2 text-3xl font-semibold text-white">
+            {destination.name}
+          </h3>
+          <div className="mt-2 flex items-center gap-2 text-sm text-white/60">
+            <MapPin className="h-3.5 w-3.5" />
+            {destination.location}
+          </div>
+        </div>
+      </div>
+
+      {/* Info Section */}
+      <div className="space-y-5 p-6">
+        {/* Quick Info Chips */}
+        <div className="flex flex-wrap gap-2">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-teal-500/10 px-3 py-1.5 text-xs font-medium text-teal-light border border-teal-500/20">
+            <Calendar className="h-3 w-3" />
+            {destination.bestSeason}
+          </span>
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-gold/10 px-3 py-1.5 text-xs font-medium text-gold-light border border-gold/20">
+            <Clock className="h-3 w-3" />
+            {destination.duration}
+          </span>
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-3 py-1.5 text-xs font-medium text-emerald-400 border border-emerald-500/20">
+            <Tag className="h-3 w-3" />
+            From {destination.startingPrice}
+          </span>
+        </div>
+
+        <p className="text-sm leading-7 text-white/60">
+          {destination.description}
+        </p>
+
+        {/* Experience Tags */}
+        <div className="flex flex-wrap gap-2">
+          {destination.tags.map((tag) => (
+            <span
+              key={tag}
+              className="inline-flex items-center rounded-full bg-white/5 px-3 py-1 text-xs font-medium text-white/50 border border-white/10"
+            >
+              {tag}
+            </span>
+          ))}
+        </div>
+
+        {/* CTA */}
+        <div className="flex items-center justify-between border-t border-white/10 pt-4">
+          <div className="flex items-center gap-1.5 text-sm text-white/50">
+            <Star className="h-4 w-4 text-gold" />
+            <span className="font-medium text-white/80">{destination.rating}</span>
+            <span>({destination.reviews})</span>
+          </div>
+          <Link
+            href={destination.href}
+            className="inline-flex items-center gap-2 text-sm font-semibold text-gold-light transition hover:text-gold"
+          >
+            Explore destination
+            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+          </Link>
+        </div>
+      </div>
+    </motion.article>
   );
 }
 
-export function PopularDestinations({
-  destinations,
-}: PopularDestinationsProps) {
+export function PopularDestinations({ destinations }: PopularDestinationsProps) {
   return (
-    <section className="container mx-auto px-4 py-24">
-      <div className="mb-10 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-        <div>
-          <p className="text-sm uppercase tracking-[0.3em] text-muted-foreground">
-            Popular Destinations
-          </p>
-          <h2 className="mt-3 text-4xl font-bold text-foreground">
-            Luxury travel stories for every explorer.
-          </h2>
-        </div>
-        <Button asChild variant="secondary" className="rounded-full px-7 py-3">
-          <Link href="/destinations">See all destinations</Link>
-        </Button>
-      </div>
+    <section className="relative py-section-lg overflow-hidden bg-[#030712]">
+      {/* Section divider */}
+      <div className="section-divider absolute top-0 left-0 right-0" />
 
-      <div className="grid gap-6 lg:grid-cols-2">
-        {destinations.map((destination, index) => (
-          <motion.article
-            key={destination.id}
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.5, delay: index * 0.08 }}
-            className="group overflow-hidden rounded-[2rem] border border-white/10 bg-white/5 shadow-[0_25px_80px_rgba(15,23,42,0.12)] transition-transform duration-300 hover:-translate-y-1"
+      {/* Background decoration */}
+      <div className="absolute inset-0 bg-gradient-to-b from-teal-950/5 to-transparent pointer-events-none" />
+      
+      <div className="container mx-auto px-4">
+        {/* Section Header */}
+        <div className="mb-14 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+          <div className="max-w-2xl">
+            <motion.span
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="inline-block text-sm uppercase tracking-[0.3em] text-gold-light/60"
+            >
+              Curated Destinations
+            </motion.span>
+            <motion.h2
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.05 }}
+              className="mt-3 text-heading-2 font-semibold text-white sm:text-display"
+            >
+              Discover handpicked
+              <span className="block text-gradient-teal">luxury escapes</span>
+            </motion.h2>
+          </div>
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
           >
-            <div className="relative h-72 overflow-hidden">
-              <DestinationImage
-                src={destination.imageUrl}
-                alt={destination.name}
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
-              <div className="absolute left-6 bottom-6 text-white">
-                <p className="text-sm uppercase tracking-[0.3em] text-white/70">
-                  {destination.category}
-                </p>
-                <h3 className="mt-3 text-3xl font-semibold">
-                  {destination.name}
-                </h3>
-                <p className="mt-2 text-sm text-white/80">
-                  {destination.location}
-                </p>
-              </div>
-            </div>
-            <div className="space-y-5 p-8">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-sm text-white/90">
-                  <Star className="h-4 w-4 text-amber-300" />
-                  {destination.rating} · {destination.reviews}
-                </div>
-                <Link
-                  href={destination.href}
-                  className="inline-flex items-center gap-2 text-sm font-semibold text-primary transition hover:text-primary/80"
-                >
-                  Explore
-                  <ArrowRight className="h-4 w-4" />
-                </Link>
-              </div>
-              <p className="text-sm leading-7 text-muted-foreground">
-                {destination.description}
-              </p>
-            </div>
-          </motion.article>
-        ))}
+            <Button asChild variant="secondary" className="rounded-full px-7 py-6 text-sm border border-white/10 bg-white/5 text-white/80 hover:bg-white/10 transition-all duration-300">
+              <Link href="/destinations">
+                Explore all destinations
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Link>
+            </Button>
+          </motion.div>
+        </div>
+
+        {/* Destination Grid */}
+        <div className="grid gap-6 lg:grid-cols-2">
+          {destinations.slice(0, 4).map((destination, index) => (
+            <DestinationCard key={destination.id} destination={destination} index={index} />
+          ))}
+        </div>
       </div>
     </section>
   );
