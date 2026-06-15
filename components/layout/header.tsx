@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
@@ -65,6 +66,20 @@ const navGroups = [
 ];
 
 export function Header() {
+  const [openMenu, setOpenMenu] = useState<string | null>(null);
+  const menuRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (!menuRef.current?.contains(event.target as Node)) {
+        setOpenMenu(null);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
   return (
     <header className="sticky top-0 z-50 border-b border-white/10 bg-background/80 backdrop-blur-3xl shadow-[0_25px_80px_rgba(15,23,42,0.12)]">
       <div className="container mx-auto flex h-20 items-center justify-between gap-4 px-4">
@@ -82,22 +97,33 @@ export function Header() {
           </div>
         </Link>
 
-        <nav className="hidden flex-1 items-center justify-center gap-3 md:flex">
+        <nav
+          className="hidden flex-1 items-center justify-center gap-3 md:flex"
+          ref={menuRef}
+        >
           {navGroups.map((group) => (
-            <div key={group.title} className="group relative">
-              <button className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-foreground transition hover:bg-white/15 focus:outline-none focus:ring-2 focus:ring-primary/30">
+            <div key={group.title} className="relative">
+              <button
+                onClick={() =>
+                  setOpenMenu(openMenu === group.title ? null : group.title)
+                }
+                className="inline-flex cursor-pointer items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-foreground transition hover:bg-white/15 focus:outline-none focus:ring-0 focus:ring-none"
+              >
                 {group.title}
                 <ChevronDown className="h-3 w-3 text-muted-foreground" />
               </button>
 
-              <div className="invisible absolute left-0 top-full mt-3 hidden min-w-[20rem] flex-col gap-3 rounded-[2rem] border border-white/10 bg-background/95 p-5 shadow-2xl backdrop-blur-xl transition-all duration-300 group-hover:flex group-hover:visible">
+              <div
+                className={`absolute left-0 top-full mt-3 min-w-[20rem] flex-col gap-3 rounded-[2rem] border border-white/10 bg-background/95 p-5 shadow-2xl backdrop-blur-xl transition-all duration-300 ${
+                  openMenu === group.title
+                    ? 'flex opacity-100 visible'
+                    : 'hidden opacity-0 invisible'
+                }`}
+              >
                 <div className="flex items-center justify-between gap-4">
                   <p className="text-sm font-semibold uppercase tracking-[0.2em] text-muted-foreground">
                     {group.title}
                   </p>
-                  <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
-                    {group.description}
-                  </span>
                 </div>
                 <div className="grid gap-2">
                   {group.items.map((item) => (
@@ -105,6 +131,7 @@ export function Header() {
                       key={item.name}
                       href={item.href}
                       className="rounded-3xl px-4 py-3 transition hover:bg-white/10"
+                      onClick={() => setOpenMenu(null)}
                     >
                       <p className="font-semibold text-foreground">
                         {item.name}
@@ -126,7 +153,7 @@ export function Header() {
             asChild
             variant="ghost"
             size="icon"
-            className="hidden rounded-full md:inline-flex"
+            className="hidden rounded-full md:inline-flex cursor-pointer"
           >
             <Link href="/search">
               <Globe className="h-4 w-4" />
