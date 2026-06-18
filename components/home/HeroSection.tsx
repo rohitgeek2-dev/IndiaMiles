@@ -10,6 +10,7 @@ import {
   MapPin,
   ArrowRight,
   Clock,
+  ChevronDown,
 } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
@@ -28,8 +29,7 @@ const stateBackgrounds: Record<string, string> = {
     'https://images.unsplash.com/photo-1566837945700-30057527ade0?auto=format&fit=crop&w=1920&q=80',
 };
 
-const DEFAULT_BG =
-  'https://images.unsplash.com/photo-1599661046289-e31897846e41?auto=format&fit=crop&w=1920&q=80';
+const DEFAULT_BG = '/images/main-hero.png';
 
 // --- Counter hook ---
 function useCounter(target: number, suffix: string, duration = 2000) {
@@ -102,15 +102,15 @@ function CounterDisplay({ value, label: indicatorLabel }: { value: string; label
           ? Clock
           : Star;
   return (
-    <div className="flex items-center gap-3">
-      <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-gold/20 to-gold/10 border border-gold/10">
-        <IconComponent className="h-5 w-5 text-gold" />
+    <div className="flex items-center gap-2">
+      <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-gold/20 to-gold/10 border border-gold/10">
+        <IconComponent className="h-4 w-4 text-gold" />
       </div>
       <div className="text-left">
-        <p className="text-lg font-bold text-white">
+        <p className="text-base font-bold text-white">
           <span ref={ref}>{label}</span>
         </p>
-        <p className="text-xs text-white/50">{indicatorLabel}</p>
+        <p className="text-[11px] text-white/50">{indicatorLabel}</p>
       </div>
     </div>
   );
@@ -133,7 +133,7 @@ export function HeroSection() {
   };
 
   return (
-    <section className="relative overflow-hidden bg-[#030712] text-white pt-24 pb-16 md:pt-28 md:pb-20">
+    <section className="relative min-h-screen overflow-hidden bg-[#030712] text-white flex items-center">
       {/* Fade-transitioning Background Image */}
       <AnimatePresence mode="wait">
         <motion.div
@@ -147,14 +147,47 @@ export function HeroSection() {
         />
       </AnimatePresence>
 
-      {/* Premium Dark Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[#030712]/40 via-[#030712]/70 to-[#030712]/95" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,_rgba(212,169,74,0.12),_transparent_50%),radial-gradient(ellipse_at_bottom_right,_rgba(26,158,143,0.1),_transparent_50%)]" />
-      <div className="absolute inset-0 animate-gradient bg-[length:200%_200%] bg-[radial-gradient(circle_at_20%_50%,rgba(212,169,74,0.06)_0%,transparent_50%),radial-gradient(circle_at_80%_50%,rgba(26,158,143,0.06)_0%,transparent_50%)]" />
+      {/* Layer 1: Dark Navy Gradient — Left to Right */}
+      <div
+        className="absolute inset-0"
+        style={{
+          background:
+            'linear-gradient(90deg, rgba(4,15,25,0.95) 0%, rgba(4,15,25,0.92) 15%, rgba(4,15,25,0.82) 35%, rgba(4,15,25,0.55) 55%, rgba(4,15,25,0.15) 75%, rgba(4,15,25,0) 100%)',
+        }}
+      />
 
-      {/* Content */}
-      <div className="container relative mx-auto px-4">
-        <div className="mx-auto max-w-5xl text-center">
+      {/* Layer 2: Warm Gold Glow — Luxury editorial feel */}
+      <div
+        className="absolute inset-0"
+        style={{
+          background:
+            'radial-gradient(circle at 15% 20%, rgba(212,175,55,0.18), transparent 45%)',
+        }}
+      />
+
+      {/* Layer 3: Bottom Depth Fade */}
+      <div
+        className="absolute inset-0"
+        style={{
+          background:
+            'linear-gradient(180deg, transparent 0%, transparent 60%, rgba(4,15,25,0.35) 100%)',
+        }}
+      />
+
+      {/* Scroll indicator */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.5, duration: 1 }}
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/30"
+      >
+        <span className="text-[10px] uppercase tracking-[0.3em]">Scroll</span>
+        <ChevronDown className="h-4 w-4 animate-bounce" />
+      </motion.div>
+
+      {/* Content - Left aligned 50% */}
+      <div className="container relative mx-auto px-4 md:px-8 lg:px-12 py-24 md:py-32">
+        <div className="w-full lg:w-[55%] xl:w-[50%]">
           {/* Premium Badge */}
           <motion.div
             initial={{ opacity: 0, y: 16 }}
@@ -179,12 +212,12 @@ export function HeroSection() {
             </span>
           </motion.h1>
 
-          {/* Subtitle */}
+          {/* Description */}
           <motion.p
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="mx-auto mt-5 max-w-2xl text-lg leading-8 text-white/70 sm:text-xl font-light"
+            className="mt-5 max-w-xl text-base leading-7 text-white/70 sm:text-lg font-light"
           >
             Curated luxury escapes, cultural expeditions, and seamless travel
             planning designed for modern explorers who seek unforgettable Indian
@@ -196,7 +229,7 @@ export function HeroSection() {
             initial={{ opacity: 0, y: 24, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ duration: 0.8, delay: 0.3 }}
-            className="mx-auto mt-8 max-w-3xl"
+            className="mt-8 max-w-2xl"
           >
             <div className="rounded-[2rem] border border-white/10 bg-white/[0.06] p-2 shadow-[0_35px_120px_rgba(0,0,0,0.3)] backdrop-blur-2xl gold-ring">
               <div className="flex items-center gap-2 rounded-[1.5rem] bg-white/5 px-5 py-1">
@@ -213,6 +246,7 @@ export function HeroSection() {
                 </Button>
               </div>
 
+              {/* Tags */}
               <div className="flex flex-wrap items-center gap-2 px-5 pb-4 pt-3">
                 <span className="text-xs font-medium uppercase tracking-wider text-white/40">
                   Popular:
@@ -231,12 +265,12 @@ export function HeroSection() {
             </div>
           </motion.div>
 
-          {/* Trust Indicators — animated counter */}
+          {/* Stats - Trust Indicators */}
           <motion.div
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.5 }}
-            className="mt-8 flex flex-wrap items-center justify-center gap-6"
+            className="mt-10 flex flex-wrap items-center gap-6"
           >
             {trustIndicators
               .filter((indicator) => indicator.label !== 'Curated Experiences')
@@ -258,7 +292,7 @@ export function HeroSection() {
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.6 }}
-            className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row"
+            className="mt-10 flex flex-col items-start gap-4 sm:flex-row"
           >
             <Button
               asChild
