@@ -148,7 +148,7 @@ export function HeroSection() {
   };
 
   return (
-    <section className="relative flex min-h-screen items-center overflow-hidden bg-[#07131f] text-white">
+    <section className="relative flex min-h-screen items-center overflow-hidden max-md:overflow-visible bg-[#07131f] text-white">
       <AnimatePresence mode="wait">
         <motion.div
           key={activeBg}
@@ -156,34 +156,34 @@ export function HeroSection() {
           animate={{ opacity: isTransitioning ? 0 : 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.65, ease: 'easeInOut' }}
-          className="absolute inset-0 scale-105 bg-cover bg-center"
+          className="absolute inset-0 scale-105 bg-cover bg-center max-md:fixed max-md:inset-0"
           style={{ backgroundImage: `url('${activeBg}')` }}
         />
       </AnimatePresence>
 
       <div
-        className="absolute inset-0"
+        className="absolute inset-0 max-md:fixed max-md:inset-0 max-md:bg-[rgba(4,14,24,0.88)]"
         style={{
           background:
             'linear-gradient(90deg, rgba(4,14,24,0.97) 0%, rgba(4,14,24,0.94) 18%, rgba(6,18,29,0.85) 38%, rgba(8,20,31,0.62) 56%, rgba(8,20,31,0.24) 75%, rgba(8,20,31,0.05) 100%)',
         }}
       />
       <div
-        className="absolute inset-0"
+        className="absolute inset-0 max-md:hidden"
         style={{
           background:
             'radial-gradient(circle at 16% 34%, rgba(1,10,18,0.72), transparent 42%)',
         }}
       />
       <div
-        className="absolute inset-0"
+        className="absolute inset-0 max-md:hidden"
         style={{
           background:
             'radial-gradient(circle at 78% 28%, rgba(255,221,187,0.52), rgba(255,215,166,0.15) 22%, transparent 48%)',
         }}
       />
       <div
-        className="absolute inset-0"
+        className="absolute inset-0 max-md:hidden"
         style={{
           background:
             'linear-gradient(180deg, rgba(5,14,23,0.04) 0%, rgba(5,14,23,0.08) 56%, rgba(4,12,20,0.52) 100%)',
