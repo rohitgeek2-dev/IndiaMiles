@@ -23,8 +23,7 @@ const stateBackgrounds: Record<string, string> = {
   Goa: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1920&q=80',
   Himalayas:
     'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=1920&q=80',
-  'Luxury Trains':
-    'https://images.unsplash.com/photo-1566837945700-30057527ade0?auto=format&fit=crop&w=1920&q=80',
+  'Luxury Trains': '/images/luxury trains.jpg',
 };
 
 const DEFAULT_BG = '/images/main-hero.png';
@@ -42,7 +41,7 @@ function useCounter(target: number, suffix: string, duration = 2000) {
           observer.disconnect();
         }
       },
-      { threshold: 0.3 }
+      { threshold: 0.3 },
     );
 
     if (ref.current) observer.observe(ref.current);
@@ -62,13 +61,21 @@ function useCounter(target: number, suffix: string, duration = 2000) {
       step += 1;
 
       if (step >= steps) {
-        setLabel(isDecimal ? `${target.toFixed(1)}${suffix}` : `${Math.round(target)}${suffix}`);
+        setLabel(
+          isDecimal
+            ? `${target.toFixed(1)}${suffix}`
+            : `${Math.round(target)}${suffix}`,
+        );
         clearInterval(timer);
         return;
       }
 
       const current = increment * step;
-      setLabel(isDecimal ? `${current.toFixed(1)}${suffix}` : `${Math.round(current)}${suffix}`);
+      setLabel(
+        isDecimal
+          ? `${current.toFixed(1)}${suffix}`
+          : `${Math.round(current)}${suffix}`,
+      );
     }, 16);
 
     return () => clearInterval(timer);
@@ -77,7 +84,10 @@ function useCounter(target: number, suffix: string, duration = 2000) {
   return { label, ref };
 }
 
-function parseIndicatorValue(value: string): { target: number; suffix: string } {
+function parseIndicatorValue(value: string): {
+  target: number;
+  suffix: string;
+} {
   const normalizedValue = value.replace(/,/g, '');
 
   if (normalizedValue.endsWith('K+')) {
@@ -91,7 +101,13 @@ function parseIndicatorValue(value: string): { target: number; suffix: string } 
   return { target: Number(normalizedValue), suffix: '' };
 }
 
-function CounterDisplay({ value, label: indicatorLabel }: { value: string; label: string }) {
+function CounterDisplay({
+  value,
+  label: indicatorLabel,
+}: {
+  value: string;
+  label: string;
+}) {
   const { target, suffix } = parseIndicatorValue(value);
   const { label, ref } = useCounter(target, suffix);
   const IconComponent =
@@ -120,7 +136,9 @@ export function HeroSection() {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeBg, setActiveBg] = useState(DEFAULT_BG);
   const [isTransitioning, setIsTransitioning] = useState(false);
-  const transitionTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const transitionTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(
+    null,
+  );
 
   useEffect(() => {
     return () => {
@@ -130,7 +148,10 @@ export function HeroSection() {
     };
   }, []);
 
-  const handleStateClick = (stateName: string, e: MouseEvent<HTMLButtonElement>) => {
+  const handleStateClick = (
+    stateName: string,
+    e: MouseEvent<HTMLButtonElement>,
+  ) => {
     e.preventDefault();
 
     const imageUrl = stateBackgrounds[stateName];
@@ -283,10 +304,18 @@ export function HeroSection() {
             <div className="h-px w-full bg-gradient-to-r from-gold/45 via-white/10 to-transparent" />
             <div className="flex flex-col gap-8 pt-8 sm:flex-row sm:flex-wrap sm:items-center sm:gap-10 lg:flex-nowrap">
               {trustIndicators
-                .filter((indicator) => indicator.label !== 'Curated Experiences')
+                .filter(
+                  (indicator) => indicator.label !== 'Curated Experiences',
+                )
                 .map((indicator, index, items) => (
-                  <div key={indicator.label} className="flex items-center gap-6">
-                    <CounterDisplay value={indicator.value} label={indicator.label} />
+                  <div
+                    key={indicator.label}
+                    className="flex items-center gap-6"
+                  >
+                    <CounterDisplay
+                      value={indicator.value}
+                      label={indicator.label}
+                    />
                     {index < items.length - 1 && (
                       <div className="hidden h-16 w-px bg-white/12 lg:block" />
                     )}
