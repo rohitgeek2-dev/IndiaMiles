@@ -4,8 +4,6 @@ import { CalendarDays, MapPin } from 'lucide-react';
 
 import { Badge } from '@/components/ui/badge';
 
-import type { ExplorerPlace } from '@/services/travel-service';
-
 import { PlaceGrid } from '@/components/explorer/PlaceGrid';
 import {
   getPlaceBySlug,
