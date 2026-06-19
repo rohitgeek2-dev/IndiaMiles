@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { ArrowRight, Calendar, User, BookOpen } from 'lucide-react';
+import { ArrowRight, Calendar, User } from 'lucide-react';
 import type { JournalStory } from '@/lib/homepage-data';
 import { Button } from '@/components/ui/button';
 

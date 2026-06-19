@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
 
 import { PlaceGrid } from '@/components/explorer/PlaceGrid';
-import { getCityByStateAndCitySlug } from '@/services/travel-service';
+import { getCityByStateAndCitySlug, type ExplorerPlace } from '@/services/travel-service';
 
 export const dynamic = 'force-dynamic';
 
@@ -22,7 +22,7 @@ export default async function CityExplorerPage({
     notFound();
   }
 
-  const places = (city as any).places.map((place: any) => ({
+  const places: ExplorerPlace[] = (city.places ?? []).map((place) => ({
     ...place,
     city,
   }));

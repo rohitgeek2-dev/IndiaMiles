@@ -3,7 +3,6 @@
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { ArrowRight, Clock, MapPin, Route } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 
 type CuratedItinerariesSectionProps = {
   itineraries: {

@@ -3,7 +3,7 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { motion } from 'framer-motion';
-import { Mail, ArrowRight, Sparkles } from 'lucide-react';
+import { Mail, Sparkles } from 'lucide-react';
 
 export function NewsletterSection() {
   return (

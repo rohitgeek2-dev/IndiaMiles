@@ -3,11 +3,11 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
-import { 
-  ArrowRight, 
-  Sparkles, 
-  MapPin, 
-  Wallet, 
+import {
+  ArrowRight,
+  Sparkles,
+  MapPin,
+  Wallet,
   Compass,
   Check,
   Plane,
@@ -24,18 +24,58 @@ const steps = [
 ];
 
 const destinations = [
-  { id: 'rajasthan', label: 'Rajasthan', emoji: '🏰', description: 'Palaces & deserts' },
-  { id: 'kerala', label: 'Kerala', emoji: '🌴', description: 'Backwaters & wellness' },
+  {
+    id: 'rajasthan',
+    label: 'Rajasthan',
+    emoji: '🏰',
+    description: 'Palaces & deserts',
+  },
+  {
+    id: 'kerala',
+    label: 'Kerala',
+    emoji: '🌴',
+    description: 'Backwaters & wellness',
+  },
   { id: 'goa', label: 'Goa', emoji: '🏖️', description: 'Beachfront luxury' },
-  { id: 'himalayas', label: 'Himalayas', emoji: '🏔️', description: 'Mountain serenity' },
-  { id: 'south', label: 'South India', emoji: '🛕', description: 'Temples & culture' },
-  { id: 'north-east', label: 'North East', emoji: '🌿', description: 'Off the beaten path' },
+  {
+    id: 'himalayas',
+    label: 'Himalayas',
+    emoji: '🏔️',
+    description: 'Mountain serenity',
+  },
+  {
+    id: 'south',
+    label: 'South India',
+    emoji: '🛕',
+    description: 'Temples & culture',
+  },
+  {
+    id: 'north-east',
+    label: 'North East',
+    emoji: '🌿',
+    description: 'Off the beaten path',
+  },
 ];
 
 const budgets = [
-  { id: 'moderate', label: 'Moderate', range: '₹25K - ₹50K', description: 'Comfortable stays' },
-  { id: 'premium', label: 'Premium', range: '₹50K - ₹1L', description: 'Luxury experiences' },
-  { id: 'ultra-luxury', label: 'Ultra Luxury', range: '₹1L+', description: 'Bespoke everything' },
+  {
+    id: 'moderate',
+    label: 'Moderate',
+    range: '₹25K - ₹50K',
+    description: 'Comfortable stays',
+  },
+  {
+    id: 'premium',
+    label: 'Premium',
+    range: '₹50K - ₹1L',
+    description: 'Luxury experiences',
+  },
+  {
+    id: 'ultra-luxury',
+    label: 'Ultra Luxury',
+    range: '₹1L+',
+    description: 'Bespoke everything',
+  },
 ];
 
 const styles = [
@@ -47,7 +87,9 @@ const styles = [
 
 export function PlanJourneyWizard() {
   const [currentStep, setCurrentStep] = useState(0);
-  const [selectedDestination, setSelectedDestination] = useState<string | null>(null);
+  const [selectedDestination, setSelectedDestination] = useState<string | null>(
+    null,
+  );
   const [selectedBudget, setSelectedBudget] = useState<string | null>(null);
   const [selectedStyle, setSelectedStyle] = useState<string | null>(null);
   const [isComplete, setIsComplete] = useState(false);
@@ -66,10 +108,14 @@ export function PlanJourneyWizard() {
 
   const canProceed = () => {
     switch (currentStep) {
-      case 0: return selectedDestination !== null;
-      case 1: return selectedBudget !== null;
-      case 2: return selectedStyle !== null;
-      default: return false;
+      case 0:
+        return selectedDestination !== null;
+      case 1:
+        return selectedBudget !== null;
+      case 2:
+        return selectedStyle !== null;
+      default:
+        return false;
     }
   };
 
@@ -97,8 +143,12 @@ export function PlanJourneyWizard() {
                 }`}
               >
                 <span className="text-2xl">{dest.emoji}</span>
-                <p className="mt-2 text-sm font-semibold text-foreground">{dest.label}</p>
-                <p className="text-xs text-muted-foreground">{dest.description}</p>
+                <p className="mt-2 text-sm font-semibold text-foreground">
+                  {dest.label}
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  {dest.description}
+                </p>
               </button>
             ))}
           </div>
@@ -118,10 +168,16 @@ export function PlanJourneyWizard() {
                 }`}
               >
                 <div>
-                  <p className="text-sm font-semibold text-foreground">{budget.label}</p>
-                  <p className="text-xs text-muted-foreground">{budget.description}</p>
+                  <p className="text-sm font-semibold text-foreground">
+                    {budget.label}
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    {budget.description}
+                  </p>
                 </div>
-                <span className="text-sm font-semibold text-primary">{budget.range}</span>
+                <span className="text-sm font-semibold text-primary">
+                  {budget.range}
+                </span>
               </button>
             ))}
           </div>
@@ -142,8 +198,12 @@ export function PlanJourneyWizard() {
                       : 'border-white/10 bg-white/[0.03] hover:border-primary/30 hover:bg-primary/[0.02]'
                   }`}
                 >
-                  <Icon className={`h-8 w-8 ${selectedStyle === style.id ? 'text-primary' : 'text-muted-foreground'}`} />
-                  <span className="text-sm font-semibold text-foreground">{style.label}</span>
+                  <Icon
+                    className={`h-8 w-8 ${selectedStyle === style.id ? 'text-primary' : 'text-muted-foreground'}`}
+                  />
+                  <span className="text-sm font-semibold text-foreground">
+                    {style.label}
+                  </span>
                 </button>
               );
             })}
@@ -176,7 +236,10 @@ export function PlanJourneyWizard() {
               className="mt-4 text-4xl font-bold text-foreground sm:text-5xl sm:leading-tight"
             >
               Tell us your{' '}
-              <span className="bg-gradient-to-r from-primary/80 to-primary bg-clip-text text-transparent">travel preferences</span>.
+              <span className="bg-gradient-to-r from-primary/80 to-primary bg-clip-text text-transparent">
+                travel preferences
+              </span>
+              .
             </motion.h2>
           </div>
 
@@ -202,18 +265,26 @@ export function PlanJourneyWizard() {
                               isActive
                                 ? 'bg-foreground text-background shadow-lg'
                                 : isDone
-                                ? 'bg-primary text-primary-foreground'
-                                : 'bg-white/[0.05] text-muted-foreground border border-white/10'
+                                  ? 'bg-primary text-primary-foreground'
+                                  : 'bg-white/[0.05] text-muted-foreground border border-white/10'
                             }`}
                           >
-                            {isDone ? <Check className="h-4 w-4" /> : <StepIcon className="h-4 w-4" />}
+                            {isDone ? (
+                              <Check className="h-4 w-4" />
+                            ) : (
+                              <StepIcon className="h-4 w-4" />
+                            )}
                           </div>
-                          <span className={`hidden text-sm font-medium sm:inline ${isActive ? 'text-foreground' : 'text-muted-foreground'}`}>
+                          <span
+                            className={`hidden text-sm font-medium sm:inline ${isActive ? 'text-foreground' : 'text-muted-foreground'}`}
+                          >
                             {step.label}
                           </span>
                         </div>
                         {index < steps.length - 1 && (
-                          <div className={`h-px w-12 sm:w-20 ${isDone ? 'bg-primary/50' : 'bg-white/10'}`} />
+                          <div
+                            className={`h-px w-12 sm:w-20 ${isDone ? 'bg-primary/50' : 'bg-white/10'}`}
+                          />
                         )}
                       </div>
                     );
@@ -273,9 +344,12 @@ export function PlanJourneyWizard() {
               <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary/80 shadow-xl">
                 <Sparkles className="h-10 w-10 text-primary-foreground" />
               </div>
-              <h3 className="mt-6 text-2xl font-semibold text-foreground">Your Journey Awaits!</h3>
+              <h3 className="mt-6 text-2xl font-semibold text-foreground">
+                Your Journey Awaits!
+              </h3>
               <p className="mt-3 text-muted-foreground">
-                We're curating the perfect itinerary based on your preferences.
+                We&apos;re curating the perfect itinerary based on your
+                preferences.
               </p>
               <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
                 <Button asChild className="rounded-full px-8 py-5">
@@ -284,7 +358,11 @@ export function PlanJourneyWizard() {
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Link>
                 </Button>
-                <Button onClick={handleReset} variant="ghost" className="rounded-full px-8 py-5">
+                <Button
+                  onClick={handleReset}
+                  variant="ghost"
+                  className="rounded-full px-8 py-5"
+                >
                   Start Over
                 </Button>
               </div>

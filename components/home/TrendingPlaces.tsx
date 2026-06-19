@@ -1,7 +1,12 @@
 import Link from "next/link";
 import { PlaceGrid } from "@/components/explorer/PlaceGrid";
+import type { ExplorerPlace } from "@/services/travel-service";
 
-export function TrendingSection({ places }: any) {
+type TrendingSectionProps = {
+  places: ExplorerPlace[];
+};
+
+export function TrendingSection({ places }: TrendingSectionProps) {
   return (
     <section className="container mx-auto px-4 py-24">
       <div className="mb-10 flex items-center justify-between">

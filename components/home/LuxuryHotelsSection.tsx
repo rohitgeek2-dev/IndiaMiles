@@ -35,8 +35,11 @@ export function LuxuryHotelsSection({ hotels }: LuxuryHotelsSectionProps) {
               transition={{ delay: 0.08 }}
               className="mt-4 text-4xl font-bold text-white sm:text-5xl sm:leading-tight"
             >
-              India's finest{' '}
-              <span className="bg-gradient-to-r from-slate-200 to-white bg-clip-text text-transparent">hotel collection</span>.
+              India&apos;s finest{' '}
+              <span className="bg-gradient-to-r from-slate-200 to-white bg-clip-text text-transparent">
+                hotel collection
+              </span>
+              .
             </motion.h2>
           </div>
           <motion.div
@@ -85,13 +88,17 @@ export function LuxuryHotelsSection({ hotels }: LuxuryHotelsSectionProps) {
                         <Star className="h-4 w-4 fill-amber-400" />
                         <span className="font-medium">{hotel.rating}</span>
                       </div>
-                      <h3 className="mt-3 text-3xl font-bold text-white sm:text-4xl">{hotel.name}</h3>
+                      <h3 className="mt-3 text-3xl font-bold text-white sm:text-4xl">
+                        {hotel.name}
+                      </h3>
                       <div className="mt-2 flex items-center gap-2 text-sm text-slate-300">
                         <MapPin className="h-4 w-4" />
                         {hotel.location}
                       </div>
                       <div className="mt-4 flex items-center gap-6">
-                        <span className="text-lg font-semibold text-white">{hotel.price}</span>
+                        <span className="text-lg font-semibold text-white">
+                          {hotel.price}
+                        </span>
                         <span className="inline-flex items-center gap-2 text-sm font-semibold text-amber-400 transition-all duration-300 group-hover:gap-3">
                           View details
                           <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
@@ -128,11 +135,17 @@ export function LuxuryHotelsSection({ hotels }: LuxuryHotelsSectionProps) {
                     <div className="flex w-1/2 flex-col justify-center space-y-2 p-5">
                       <div className="flex items-center gap-1 text-sm text-amber-400">
                         <Star className="h-3.5 w-3.5 fill-amber-400" />
-                        <span className="font-medium text-white">{hotel.rating}</span>
+                        <span className="font-medium text-white">
+                          {hotel.rating}
+                        </span>
                       </div>
-                      <h3 className="text-base font-semibold text-white">{hotel.name}</h3>
+                      <h3 className="text-base font-semibold text-white">
+                        {hotel.name}
+                      </h3>
                       <p className="text-xs text-slate-400">{hotel.location}</p>
-                      <p className="text-sm font-semibold text-white">{hotel.price}</p>
+                      <p className="text-sm font-semibold text-white">
+                        {hotel.price}
+                      </p>
                     </div>
                   </div>
                 </Link>

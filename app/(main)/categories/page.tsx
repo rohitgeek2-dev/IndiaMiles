@@ -1,11 +1,12 @@
 import Link from 'next/link';
 
 import { getCategories } from '@/services/travel-service';
+import type { Category } from '@prisma/client';
 
 export const dynamic = 'force-dynamic';
 
 export default async function CategoriesPage() {
-  const categories = (await getCategories()) as any[];
+  const categories: Category[] = await getCategories();
 
   return (
     <section className="container mx-auto px-4 py-12">
@@ -22,7 +23,7 @@ export default async function CategoriesPage() {
         </p>
       </div>
       <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-        {categories.map((category: any) => (
+        {categories.map((category) => (
           <Link
             key={category.id}
             href={`/categories/${category.slug}`}

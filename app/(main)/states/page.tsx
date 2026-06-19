@@ -1,11 +1,12 @@
 import Link from 'next/link';
 
 import { getStates } from '@/services/travel-service';
+import type { State } from '@prisma/client';
 
 export const dynamic = 'force-dynamic';
 
 export default async function StatesPage() {
-  const states = (await getStates()) as any[];
+  const states: State[] = await getStates();
 
   return (
     <section className="container mx-auto px-4 py-12">
@@ -23,7 +24,7 @@ export default async function StatesPage() {
       </div>
 
       <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-        {states.map((state: any) => (
+        {states.map((state) => (
           <Link
             key={state.id}
             href={`/${state.slug}`}

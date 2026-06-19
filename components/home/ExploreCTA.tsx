@@ -1,8 +1,9 @@
 import Link from 'next/link';
 import { ArrowRight, Compass, MapPin, Sparkles } from 'lucide-react';
+import type { State } from '@prisma/client';
 
 type ExploreCTAProps = {
-  states: Array<any>;
+  states: State[];
 };
 
 export function ExploreCTA({ states }: ExploreCTAProps) {

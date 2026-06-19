@@ -3,7 +3,7 @@
 import { useState, useCallback } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { ArrowRight, ImageOff, Star, Clock, MapPin, Tag, Calendar, Sparkles } from 'lucide-react';
+import { ArrowRight, ImageOff, Star, Clock, MapPin, Tag, Calendar } from 'lucide-react';
 import type { HomepageDestination } from '@/lib/homepage-data';
 import { Button } from '@/components/ui/button';
 

@@ -94,10 +94,23 @@ export function getStateBySlug(stateSlug: string) {
   );
 }
 
+const cityWithPlacesInclude = {
+  state: true,
+  places: {
+    where: { isActive: true },
+    include: categoryInclude,
+    orderBy: { name: "asc" },
+  },
+} satisfies Prisma.CityInclude;
+
+export type CityWithPlaces = Prisma.CityGetPayload<{
+  include: typeof cityWithPlacesInclude;
+}>;
+
 export async function getCityByStateAndCitySlug(
   stateSlug: string,
   citySlug: string,
-): Promise<any> {
+): Promise<CityWithPlaces | null> {
   return safeRead(
     () =>
       prisma!.city.findFirst({
@@ -109,14 +122,7 @@ export async function getCityByStateAndCitySlug(
             isActive: true,
           },
         },
-        include: {
-          state: true,
-          places: {
-            where: { isActive: true },
-            include: categoryInclude,
-            orderBy: { name: "asc" },
-          },
-        },
+        include: cityWithPlacesInclude,
       }),
     null,
   );

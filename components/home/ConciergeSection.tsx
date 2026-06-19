@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { ArrowRight, Sparkles, MessageCircle, Shield, Clock, HeadphonesIcon } from 'lucide-react';
+import { ArrowRight, MessageCircle, Shield, Clock, HeadphonesIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const conciergeFeatures = [

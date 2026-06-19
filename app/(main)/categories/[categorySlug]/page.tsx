@@ -1,7 +1,11 @@
 import { notFound } from 'next/navigation';
 
 import { PlaceGrid } from '@/components/explorer/PlaceGrid';
-import { getCategoryBySlug, getPlaces } from '@/services/travel-service';
+import {
+  getCategoryBySlug,
+  getPlaces,
+  type ExplorerPlace,
+} from '@/services/travel-service';
 
 export const dynamic = 'force-dynamic';
 
@@ -16,8 +20,8 @@ export default async function CategoryDetailPage({
 }: CategoryDetailPageProps) {
   const { categorySlug } = await params;
 
-  const category = (await getCategoryBySlug(categorySlug)) as any;
-  const places = (await getPlaces({ categorySlug })) as any;
+  const category = await getCategoryBySlug(categorySlug);
+  const places: ExplorerPlace[] = await getPlaces({ categorySlug });
 
   if (!category) {
     notFound();

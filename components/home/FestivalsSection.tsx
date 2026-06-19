@@ -36,7 +36,7 @@ export function FestivalsSection({ festivals }: FestivalsSectionProps) {
             transition={{ delay: 0.08 }}
             className="mt-4 text-heading-2 font-semibold text-white sm:text-display"
           >
-            India's cultural{' '}
+            India&apos;s cultural{' '}
             <span className="text-gradient-gold">heartbeat</span>.
           </motion.h2>
           <motion.p
@@ -46,7 +46,8 @@ export function FestivalsSection({ festivals }: FestivalsSectionProps) {
             transition={{ delay: 0.12 }}
             className="mt-4 text-lg leading-relaxed text-white/50 max-w-xl"
           >
-            Plan your journey around India's most vibrant celebrations, from dazzling festivals to ancient rituals.
+            Plan your journey around India&apos;s most vibrant celebrations,
+            from dazzling festivals to ancient rituals.
           </motion.p>
         </div>
 
@@ -88,7 +89,9 @@ export function FestivalsSection({ festivals }: FestivalsSectionProps) {
                         <MapPin className="h-3.5 w-3.5" />
                         {festival.location}
                       </div>
-                      <h3 className="mt-2 text-xl font-semibold text-white">{festival.name}</h3>
+                      <h3 className="mt-2 text-xl font-semibold text-white">
+                        {festival.name}
+                      </h3>
                       <p className="mt-2 text-sm leading-relaxed text-white/50">
                         {festival.description}
                       </p>

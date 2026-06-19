@@ -37,7 +37,7 @@ export function LuxuryHotelCollection({ hotels }: LuxuryHotelCollectionProps) {
               transition={{ delay: 0.08 }}
               className="mt-4 text-heading-2 font-semibold text-white sm:text-display"
             >
-              India's finest{' '}
+              India&apos;s finest{' '}
               <span className="text-gradient-gold">hotel collection</span>.
             </motion.h2>
           </div>
@@ -84,13 +84,17 @@ export function LuxuryHotelCollection({ hotels }: LuxuryHotelCollectionProps) {
                         <Star className="h-4 w-4 fill-gold" />
                         <span className="font-medium">{hotel.rating}</span>
                       </div>
-                      <h3 className="mt-3 text-heading-4 font-bold text-white">{hotel.name}</h3>
+                      <h3 className="mt-3 text-heading-4 font-bold text-white">
+                        {hotel.name}
+                      </h3>
                       <div className="mt-2 flex items-center gap-2 text-sm text-white/50">
                         <MapPin className="h-4 w-4" />
                         {hotel.location}
                       </div>
                       <div className="mt-4 flex items-center gap-6">
-                        <span className="text-lg font-semibold text-white">{hotel.price}</span>
+                        <span className="text-lg font-semibold text-white">
+                          {hotel.price}
+                        </span>
                         <span className="inline-flex items-center gap-2 text-sm font-semibold text-gold-light transition-all duration-300 group-hover:gap-3">
                           View details
                           <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
@@ -127,11 +131,17 @@ export function LuxuryHotelCollection({ hotels }: LuxuryHotelCollectionProps) {
                     <div className="flex w-1/2 flex-col justify-center space-y-2 p-5">
                       <div className="flex items-center gap-1 text-sm text-gold">
                         <Star className="h-3.5 w-3.5 fill-gold" />
-                        <span className="font-medium text-white">{hotel.rating}</span>
+                        <span className="font-medium text-white">
+                          {hotel.rating}
+                        </span>
                       </div>
-                      <h3 className="text-base font-semibold text-white">{hotel.name}</h3>
+                      <h3 className="text-base font-semibold text-white">
+                        {hotel.name}
+                      </h3>
                       <p className="text-xs text-white/40">{hotel.location}</p>
-                      <p className="text-sm font-semibold text-white">{hotel.price}</p>
+                      <p className="text-sm font-semibold text-white">
+                        {hotel.price}
+                      </p>
                     </div>
                   </div>
                 </Link>

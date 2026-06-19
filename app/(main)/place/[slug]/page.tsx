@@ -3,10 +3,14 @@ import { notFound } from 'next/navigation';
 import { CalendarDays, MapPin } from 'lucide-react';
 
 import { Badge } from '@/components/ui/badge';
+
+import type { ExplorerPlace } from '@/services/travel-service';
+
 import { PlaceGrid } from '@/components/explorer/PlaceGrid';
 import {
   getPlaceBySlug,
   getRecommendedPlaces,
+  type ExplorerPlace,
 } from '@/services/travel-service';
 
 export const dynamic = 'force-dynamic';
@@ -24,7 +28,7 @@ export default async function PlaceDetailPage({
   const [place, recommendations] = (await Promise.all([
     getPlaceBySlug(slug),
     getRecommendedPlaces(slug),
-  ])) as any;
+  ])) as [ExplorerPlace | null, ExplorerPlace[]];
 
   if (!place) {
     notFound();
@@ -35,7 +39,7 @@ export default async function PlaceDetailPage({
       <div className="grid gap-10 lg:grid-cols-[1fr_380px]">
         <div>
           <div className="mb-6 flex flex-wrap gap-2">
-            {place.categories.map(({ category }: any) => (
+            {place.categories.map(({ category }) => (
               <Badge key={category.id} variant="secondary">
                 {category.name}
               </Badge>
