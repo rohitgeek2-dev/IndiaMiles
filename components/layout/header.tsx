@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { Menu, ChevronDown, Sparkles, Heart, Search, MapPin, Compass, Landmark, Palette, Sun, Mountain, Gem, ArrowRight } from 'lucide-react';
+import { Menu, ChevronDown, Heart, Search, MapPin, Compass, Landmark, Palette, Sun, Mountain, Gem, ArrowRight } from 'lucide-react';
 import { DarkModeToggle } from '@/components/common/DarkModeToggle';
 
 const megaMenuItems = [
@@ -207,17 +207,6 @@ export function Header() {
             <Heart className="h-4 w-4" />
           </button>
 
-          {/* AI Trip Planner */}
-          <Button
-            asChild
-            className="hidden lg:inline-flex rounded-full px-5 py-2 text-sm font-semibold bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 border-0 shadow-lg shadow-amber-500/20"
-          >
-            <Link href="/plan">
-              <Sparkles className="mr-1.5 h-4 w-4" />
-              AI Trip Planner
-            </Link>
-          </Button>
-
           {/* Mobile Menu */}
           <Sheet>
             <SheetTrigger asChild>
@@ -289,13 +278,6 @@ export function Header() {
               </div>
 
               <div className="mt-6 space-y-3">
-                <Link
-                  href="/plan"
-                  className="flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 px-5 py-3 text-sm font-semibold text-white shadow-lg"
-                >
-                  <Sparkles className="h-4 w-4" />
-                  AI Trip Planner
-                </Link>
                 <Link
                   href="/search"
                   className="flex items-center justify-center gap-2 rounded-full border border-border/50 bg-card px-5 py-3 text-sm font-semibold text-foreground transition hover:bg-muted"
