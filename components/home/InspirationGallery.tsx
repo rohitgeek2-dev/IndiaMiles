@@ -23,12 +23,9 @@ export function InspirationGallery() {
   };
 
   return (
-    <section className="relative overflow-hidden py-section-xl bg-[#030712]">
+    <section className="relative overflow-hidden py-section-xl bg-white">
       {/* Section divider */}
-      <div className="section-divider absolute top-0 left-0 right-0" />
-
-      {/* Ambient gradient */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,rgba(212,169,74,0.03)_0%,transparent_50%)] pointer-events-none" />
+      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold-DEFAULT/20 to-transparent" />
 
       <div className="container mx-auto px-4">
         <div className="mb-14 max-w-2xl">
@@ -36,7 +33,7 @@ export function InspirationGallery() {
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            className="inline-block text-sm uppercase tracking-[0.3em] text-gold-light/60"
+            className="inline-block text-sm uppercase tracking-[0.3em] text-gold-DEFAULT/70"
           >
             Inspiration Gallery
           </motion.span>
@@ -45,7 +42,7 @@ export function InspirationGallery() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.08 }}
-            className="mt-4 text-heading-2 font-semibold text-white sm:text-display"
+            className="mt-4 text-heading-2 font-semibold text-[#111827] sm:text-display"
           >
             A visual journey through{' '}
             <span className="text-gradient-gold-teal">Incredible India</span>.
@@ -62,14 +59,14 @@ export function InspirationGallery() {
               viewport={{ once: true }}
               transition={{ delay: index * 0.05 }}
               onClick={() => setSelectedImage(image.src)}
-              className={`group relative overflow-hidden rounded-[1.5rem] border border-white/10 transition-all duration-500 hover:-translate-y-1 hover:shadow-luxury-lg ${
+              className={`group relative overflow-hidden rounded-[1.5rem] border border-[#E5E7EB] transition-all duration-500 hover:-translate-y-1 hover:shadow-card-hover shadow-card ${
                 index === 0 ? 'row-span-2 col-span-2 md:col-span-1' : ''
               } ${index === 3 ? 'col-span-2' : ''}`}
             >
               <div className={`relative ${index === 0 ? 'h-80 md:h-96' : 'h-48'} overflow-hidden`}>
                 {errorImages.has(image.id) ? (
-                  <div className="flex h-full w-full items-center justify-center bg-[#071228]">
-                    <ImageOff className="h-8 w-8 text-white/20" />
+                  <div className="flex h-full w-full items-center justify-center bg-gray-50">
+                    <ImageOff className="h-8 w-8 text-gray-300" />
                   </div>
                 ) : (
                   <img
@@ -80,11 +77,11 @@ export function InspirationGallery() {
                     className="h-full w-full object-cover transition duration-700 group-hover:scale-110"
                   />
                 )}
-                <div className="absolute inset-0 bg-gradient-to-t from-[#030712]/80 via-transparent to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
                 
                 {/* Tag */}
                 <div className="absolute bottom-4 left-4">
-                  <span className="inline-flex items-center rounded-full bg-gold/20 px-3 py-1 text-xs font-medium text-gold-light backdrop-blur-sm border border-gold/30">
+                  <span className="inline-flex items-center rounded-full bg-white/90 px-3 py-1 text-xs font-medium text-gold-DEFAULT backdrop-blur-sm border border-[#E5E7EB] shadow-sm">
                     {image.tag}
                   </span>
                 </div>
@@ -102,7 +99,7 @@ export function InspirationGallery() {
         >
           <Link
             href="/gallery"
-            className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-7 py-3 text-sm font-medium text-white/70 hover:bg-white/10 hover:text-white transition-all duration-300"
+            className="inline-flex items-center gap-2 rounded-full border border-[#E5E7EB] bg-white px-7 py-3 text-sm font-medium text-[#4B5563] hover:bg-gray-50 hover:text-[#111827] transition-all duration-300 shadow-sm"
           >
             View full gallery
             <ArrowRight className="h-4 w-4" />
@@ -118,7 +115,7 @@ export function InspirationGallery() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setSelectedImage(null)}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-[#030712]/95 backdrop-blur-xl p-4"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-xl p-4"
           >
             <button
               onClick={() => setSelectedImage(null)}

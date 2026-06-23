@@ -25,12 +25,12 @@ const iconMap: Record<string, React.ElementType> = {
 
 export function TravelThemes({ themes }: TravelThemesProps) {
   return (
-    <section className="relative py-section-xl bg-[#030712]">
+    <section className="relative py-section-xl bg-white">
       {/* Section divider */}
-      <div className="section-divider absolute top-0 left-0 right-0" />
+      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold-DEFAULT/20 to-transparent" />
 
-      {/* Dark editorial background */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(212,169,74,0.04)_0%,transparent_60%)] pointer-events-none" />
+      {/* Light ambiance */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(212,169,74,0.03)_0%,transparent_60%)] pointer-events-none" />
 
       <div className="container mx-auto px-4">
         {/* Section header — left-aligned, editorial */}
@@ -39,7 +39,7 @@ export function TravelThemes({ themes }: TravelThemesProps) {
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            className="inline-block text-sm uppercase tracking-[0.3em] text-gold-light/60"
+            className="inline-block text-sm uppercase tracking-[0.3em] text-gold-DEFAULT/70"
           >
             Ways to Travel
           </motion.span>
@@ -48,7 +48,7 @@ export function TravelThemes({ themes }: TravelThemesProps) {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.08 }}
-            className="mt-4 text-heading-2 font-semibold text-white sm:text-display"
+            className="mt-4 text-heading-2 font-semibold text-[#111827] sm:text-display"
           >
             Every journey has a{' '}
             <span className="text-gradient-gold">unique story</span>.
@@ -58,7 +58,7 @@ export function TravelThemes({ themes }: TravelThemesProps) {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.12 }}
-            className="mt-4 text-lg leading-relaxed text-white/50 max-w-xl"
+            className="mt-4 text-lg leading-relaxed text-[#4B5563] max-w-xl"
           >
             From royal heritage to Himalayan adventures — find the India experience that speaks to you.
           </motion.p>
@@ -68,8 +68,8 @@ export function TravelThemes({ themes }: TravelThemesProps) {
       {/* Full-bleed horizontal scrollable theme cards */}
       <div className="relative">
         {/* Edge fades */}
-        <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-24 bg-gradient-to-r from-[#030712] to-transparent" />
-        <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-24 bg-gradient-to-l from-[#030712] to-transparent" />
+        <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-24 bg-gradient-to-r from-white to-transparent" />
+        <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-24 bg-gradient-to-l from-white to-transparent" />
 
         <div className="flex gap-6 overflow-x-auto px-4 pb-6 sm:px-8 md:px-16 lg:px-20 xl:px-24 hide-scrollbar">
           {themes.map((theme, index) => {
@@ -84,7 +84,7 @@ export function TravelThemes({ themes }: TravelThemesProps) {
                 className="group flex-shrink-0"
               >
                 <Link href={theme.href} className="block">
-                  <div className="relative flex h-[420px] w-[340px] flex-col justify-end overflow-hidden rounded-[2rem] border border-white/10 transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_30px_80px_rgba(0,0,0,0.4)] gold-ring">
+                  <div className="relative flex h-[420px] w-[340px] flex-col justify-end overflow-hidden rounded-[2rem] border border-[#E5E7EB] transition-all duration-500 hover:-translate-y-2 hover:shadow-card-hover shadow-card">
                     {/* Background image */}
                     <div className="absolute inset-0">
                       <img
@@ -94,17 +94,17 @@ export function TravelThemes({ themes }: TravelThemesProps) {
                         className="h-full w-full object-cover transition duration-700 group-hover:scale-110"
                       />
                     </div>
-                    {/* Dark gradient overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#030712] via-[#030712]/50 to-transparent" />
+                    {/* Gradient overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
 
                     {/* Content */}
                     <div className="relative z-10 space-y-4 p-8">
-                      <div className="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-gold/20 border border-gold/30 shadow-lg backdrop-blur-sm">
-                        <IconComponent className="h-7 w-7 text-gold-light" />
+                      <div className="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-white/20 backdrop-blur-md border border-white/30 shadow-lg">
+                        <IconComponent className="h-7 w-7 text-white" />
                       </div>
                       <div>
                         <h3 className="text-2xl font-bold text-white">{theme.name}</h3>
-                        <p className="mt-2 text-sm leading-relaxed text-white/60">{theme.description}</p>
+                        <p className="mt-2 text-sm leading-relaxed text-white/70">{theme.description}</p>
                       </div>
                       <span className="inline-flex items-center gap-2 text-sm font-semibold text-gold-light transition-all duration-300 group-hover:gap-3">
                         Explore {theme.name}
@@ -113,7 +113,7 @@ export function TravelThemes({ themes }: TravelThemesProps) {
                     </div>
 
                     {/* Hover ring */}
-                    <div className="pointer-events-none absolute inset-0 rounded-[2rem] opacity-0 ring-1 ring-gold/30 transition-opacity duration-500 group-hover:opacity-100" />
+                    <div className="pointer-events-none absolute inset-0 rounded-[2rem] opacity-0 ring-1 ring-gold-DEFAULT/40 transition-opacity duration-500 group-hover:opacity-100" />
                   </div>
                 </Link>
               </motion.div>

@@ -44,14 +44,24 @@ const config = {
           foreground: "hsl(var(--card-foreground))",
         },
         gold: {
-          DEFAULT: "#D4A94A",
-          light: "#E8C96A",
-          dark: "#B8922E",
+          DEFAULT: "#C9A94E",
+          light: "#D4B45A",
+          dark: "#A88A3A",
         },
         teal: {
-          DEFAULT: "#1A9E8F",
+          DEFAULT: "#208B7E",
           light: "#2DB9AA",
-          dark: "#0D7D6F",
+          dark: "#1A6B61",
+        },
+        cream: {
+          DEFAULT: "#FAF8F4",
+          light: "#FCFBF8",
+          dark: "#F5F1E8",
+        },
+        sand: {
+          DEFAULT: "#F5F1E8",
+          light: "#F8F5EF",
+          dark: "#EDE8DB",
         },
       },
       borderRadius: {
@@ -63,10 +73,12 @@ const config = {
         "4xl": "2rem",
       },
       boxShadow: {
-        luxury: "0 25px 80px rgba(0,0,0,0.08), 0 8px 32px rgba(212,169,74,0.04)",
-        "luxury-lg": "0 35px 100px rgba(0,0,0,0.1), 0 10px 40px rgba(212,169,74,0.06)",
-        "luxury-xl": "0 50px 150px rgba(0,0,0,0.12), 0 15px 60px rgba(212,169,74,0.08)",
-        "gold": "0 0 0 1px rgba(212,169,74,0.2), 0 0 20px rgba(212,169,74,0.05)",
+        luxury: "0 4px 20px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.02)",
+        "luxury-lg": "0 10px 40px rgba(0, 0, 0, 0.06), 0 2px 8px rgba(0, 0, 0, 0.03)",
+        "luxury-xl": "0 20px 60px rgba(0, 0, 0, 0.08), 0 4px 12px rgba(0, 0, 0, 0.03)",
+        "gold": "0 0 0 1px rgba(212, 169, 74, 0.15), 0 0 15px rgba(212, 169, 74, 0.03)",
+        "card": "0 2px 12px rgba(0, 0, 0, 0.04), 0 1px 4px rgba(0, 0, 0, 0.02)",
+        "card-hover": "0 8px 30px rgba(0, 0, 0, 0.06), 0 2px 8px rgba(0, 0, 0, 0.03)",
       },
       fontSize: {
         "display-lg": ["5rem", { lineHeight: "1.05", letterSpacing: "-0.03em" }],

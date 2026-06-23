@@ -12,8 +12,7 @@ import { CuratedItinerariesSection } from '@/components/home/CuratedItinerariesS
 import { FestivalsSection } from '@/components/home/FestivalsSection';
 import { ConciergeSection } from '@/components/home/ConciergeSection';
 import { InspirationGallery } from '@/components/home/InspirationGallery';
-import { NewsletterSection } from '@/components/home/NewsletterSection';
-import { CallToActionBanner } from '@/components/home/CallToActionBanner';
+import { LuxuryFinaleSection } from '@/components/home/LuxuryFinaleSection';
 import {
   homepageDestinations,
   homepageThemes,
@@ -85,11 +84,8 @@ export default function HomePage() {
       {/* 14. Travel Inspiration Gallery */}
       <InspirationGallery />
 
-      {/* 15. Newsletter */}
-      <NewsletterSection />
-
-      {/* 16. Final CTA */}
-      <CallToActionBanner />
+      {/* 15. Grand Finale — Plan + Subscribe */}
+      <LuxuryFinaleSection />
     </>
   );
 }

@@ -21,13 +21,13 @@ function DestinationCard({ destination, index }: { destination: HomepageDestinat
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.2 }}
       transition={{ duration: 0.6, delay: index * 0.08 }}
-      className="group relative overflow-hidden rounded-[2rem] bg-white/[0.03] border border-white/10 backdrop-blur-sm transition-all duration-500 hover:-translate-y-2 shadow-luxury hover:shadow-luxury-xl"
+      className="group relative overflow-hidden rounded-[2rem] bg-white border border-[#E5E7EB] transition-all duration-500 hover:-translate-y-2 shadow-card hover:shadow-card-hover"
     >
       {/* Image Container */}
       <div className="relative h-80 overflow-hidden">
         {isError ? (
-          <div className="flex h-full w-full items-center justify-center bg-[#071228]">
-            <div className="flex flex-col items-center gap-2 text-white/30">
+          <div className="flex h-full w-full items-center justify-center bg-gray-50">
+            <div className="flex flex-col items-center gap-2 text-gray-300">
               <ImageOff className="h-10 w-10" />
               <span className="text-xs">Image unavailable</span>
             </div>
@@ -41,11 +41,11 @@ function DestinationCard({ destination, index }: { destination: HomepageDestinat
             className="h-full w-full object-cover transition duration-700 group-hover:scale-110"
           />
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#030712] via-[#030712]/30 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
         
         {/* Rating Badge */}
-        <div className="absolute right-4 top-4 flex items-center gap-1.5 rounded-full bg-[#030712]/60 backdrop-blur-md px-3 py-1.5 text-xs font-medium text-white border border-white/10">
-          <Star className="h-3.5 w-3.5 text-gold" />
+        <div className="absolute right-4 top-4 flex items-center gap-1.5 rounded-full bg-white/90 backdrop-blur-md px-3 py-1.5 text-xs font-medium text-[#111827] border border-[#E5E7EB] shadow-sm">
+          <Star className="h-3.5 w-3.5 text-gold-DEFAULT" />
           {destination.rating}
         </div>
 
@@ -57,7 +57,7 @@ function DestinationCard({ destination, index }: { destination: HomepageDestinat
           <h3 className="mt-2 text-3xl font-semibold text-white">
             {destination.name}
           </h3>
-          <div className="mt-2 flex items-center gap-2 text-sm text-white/60">
+          <div className="mt-2 flex items-center gap-2 text-sm text-white/70">
             <MapPin className="h-3.5 w-3.5" />
             {destination.location}
           </div>
@@ -68,21 +68,21 @@ function DestinationCard({ destination, index }: { destination: HomepageDestinat
       <div className="space-y-5 p-6">
         {/* Quick Info Chips */}
         <div className="flex flex-wrap gap-2">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-teal-500/10 px-3 py-1.5 text-xs font-medium text-teal-light border border-teal-500/20">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-teal-50 px-3 py-1.5 text-xs font-medium text-teal-DEFAULT border border-teal-100">
             <Calendar className="h-3 w-3" />
             {destination.bestSeason}
           </span>
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-gold/10 px-3 py-1.5 text-xs font-medium text-gold-light border border-gold/20">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-50 px-3 py-1.5 text-xs font-medium text-gold-DEFAULT border border-amber-100">
             <Clock className="h-3 w-3" />
             {destination.duration}
           </span>
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-3 py-1.5 text-xs font-medium text-emerald-400 border border-emerald-500/20">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1.5 text-xs font-medium text-emerald-600 border border-emerald-100">
             <Tag className="h-3 w-3" />
             From {destination.startingPrice}
           </span>
         </div>
 
-        <p className="text-sm leading-7 text-white/60">
+        <p className="text-sm leading-7 text-[#4B5563]">
           {destination.description}
         </p>
 
@@ -91,7 +91,7 @@ function DestinationCard({ destination, index }: { destination: HomepageDestinat
           {destination.tags.map((tag) => (
             <span
               key={tag}
-              className="inline-flex items-center rounded-full bg-white/5 px-3 py-1 text-xs font-medium text-white/50 border border-white/10"
+              className="inline-flex items-center rounded-full bg-gray-50 px-3 py-1 text-xs font-medium text-[#4B5563] border border-[#E5E7EB]"
             >
               {tag}
             </span>
@@ -99,15 +99,15 @@ function DestinationCard({ destination, index }: { destination: HomepageDestinat
         </div>
 
         {/* CTA */}
-        <div className="flex items-center justify-between border-t border-white/10 pt-4">
-          <div className="flex items-center gap-1.5 text-sm text-white/50">
-            <Star className="h-4 w-4 text-gold" />
-            <span className="font-medium text-white/80">{destination.rating}</span>
+        <div className="flex items-center justify-between border-t border-[#E5E7EB] pt-4">
+          <div className="flex items-center gap-1.5 text-sm text-[#4B5563]">
+            <Star className="h-4 w-4 text-gold-DEFAULT" />
+            <span className="font-medium text-[#111827]">{destination.rating}</span>
             <span>({destination.reviews})</span>
           </div>
           <Link
             href={destination.href}
-            className="inline-flex items-center gap-2 text-sm font-semibold text-gold-light transition hover:text-gold"
+            className="inline-flex items-center gap-2 text-sm font-semibold text-gold-DEFAULT transition hover:text-gold-dark"
           >
             Explore destination
             <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
@@ -120,12 +120,12 @@ function DestinationCard({ destination, index }: { destination: HomepageDestinat
 
 export function PopularDestinations({ destinations }: PopularDestinationsProps) {
   return (
-    <section className="relative py-section-lg overflow-hidden bg-[#030712]">
+    <section className="relative py-section-lg overflow-hidden bg-white">
       {/* Section divider */}
-      <div className="section-divider absolute top-0 left-0 right-0" />
+      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold-DEFAULT/20 to-transparent" />
 
-      {/* Background decoration */}
-      <div className="absolute inset-0 bg-gradient-to-b from-teal-950/5 to-transparent pointer-events-none" />
+      {/* Subtle background warmth */}
+      <div className="absolute inset-0 bg-gradient-to-b from-amber-50/20 to-transparent pointer-events-none" />
       
       <div className="container mx-auto px-4">
         {/* Section Header */}
@@ -135,7 +135,7 @@ export function PopularDestinations({ destinations }: PopularDestinationsProps) 
               initial={{ opacity: 0, y: 10 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="inline-block text-sm uppercase tracking-[0.3em] text-gold-light/60"
+              className="inline-block text-sm uppercase tracking-[0.3em] text-gold-DEFAULT/70"
             >
               Curated Destinations
             </motion.span>
@@ -144,7 +144,7 @@ export function PopularDestinations({ destinations }: PopularDestinationsProps) 
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.05 }}
-              className="mt-3 text-heading-2 font-semibold text-white sm:text-display"
+              className="mt-3 text-heading-2 font-semibold text-[#111827] sm:text-display"
             >
               Discover handpicked
               <span className="block text-gradient-teal">luxury escapes</span>
@@ -155,7 +155,7 @@ export function PopularDestinations({ destinations }: PopularDestinationsProps) 
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
           >
-            <Button asChild variant="secondary" className="rounded-full px-7 py-6 text-sm border border-white/10 bg-white/5 text-white/80 hover:bg-white/10 transition-all duration-300">
+            <Button asChild variant="outline" className="rounded-full px-7 py-6 text-sm border-[#E5E7EB] text-[#4B5563] hover:bg-gray-50 hover:text-[#111827] transition-all duration-300">
               <Link href="/destinations">
                 Explore all destinations
                 <ArrowRight className="ml-2 h-4 w-4" />

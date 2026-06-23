@@ -29,9 +29,9 @@ export function LuxuryCard({
   onClick,
 }: LuxuryCardProps) {
   const variantStyles = {
-    default: 'bg-[#0A0D1A] border border-white/5',
+    default: 'bg-white border border-[#E5E7EB] shadow-card',
     glass: 'glass-card',
-    elevated: 'bg-[#0A0D1A] border border-white/5 shadow-luxury',
+    elevated: 'bg-white border border-[#E5E7EB] shadow-luxury',
     minimal: 'bg-transparent',
   };
 
