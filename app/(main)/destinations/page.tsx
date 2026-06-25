@@ -1,24 +1,14 @@
-import type { ExplorerPlace } from '@/services/travel-service';
-import { getPlaces, getStates } from '@/services/travel-service';
-import type { State } from '@prisma/client';
-import { DestinationsDirectoryClient } from './DestinationsDirectoryClient';
-import DestinationsFiltersClient from './DestinationsFiltersClient';
+import { getPlaces, getStates, getCategories } from '@/services/travel-service';
+import { DestinationsPageClient } from './DestinationsPageClient';
 
 export const dynamic = 'force-dynamic';
 
-type DestinationsPageProps = {
-  searchParams: Promise<{
-    state?: string;
-    city?: string;
-    q?: string;
-  }>;
-};
-
-export default async function DestinationsPage({
-  searchParams,
-}: DestinationsPageProps) {
-  const params = await searchParams;
-  const [rawStates, allPlaces] = await Promise.all([getStates(), getPlaces()]);
+export default async function DestinationsPage() {
+  const [rawStates, allPlaces, categories] = await Promise.all([
+    getStates(),
+    getPlaces(),
+    getCategories(),
+  ]);
 
   const states = rawStates.map((s) => ({
     ...s,
@@ -26,82 +16,34 @@ export default async function DestinationsPage({
     imageUrl: s.imageUrl ?? undefined,
   }));
 
-  const stateQuery = params.state?.trim() ?? '';
-  const cityQuery = params.city?.trim() ?? '';
-  const qQuery = params.q?.trim() ?? '';
+  const totalDestinations = allPlaces.length;
+  const totalStates = states.length;
+  const totalCities = new Set(allPlaces.map((p) => p.city.id)).size;
+  const totalCategories = categories.length;
 
-  const filteredPlaces: ExplorerPlace[] = allPlaces.filter((place) => {
-    const matchesState = !stateQuery
-      ? true
-      : place.city.state.slug.toLowerCase() === stateQuery.toLowerCase() ||
-        place.city.state.name.toLowerCase() === stateQuery.toLowerCase();
-
-    if (!matchesState) return false;
-
-    const matchesCity = !cityQuery
-      ? true
-      : place.city.slug.toLowerCase() === cityQuery.toLowerCase() ||
-        place.city.name.toLowerCase() === cityQuery.toLowerCase();
-
-    if (!matchesCity) return false;
-
-    if (!qQuery) return true;
-
-    const haystack = [
-      place.name,
-      place.city.name,
-      place.city.state.name,
-      place.description,
-      place.shortDescription,
-    ]
-      .filter(Boolean)
-      .join(' ')
-      .toLowerCase();
-
-    return haystack.includes(qQuery.toLowerCase());
-  });
-
-  const citiesForDropdown =
-    stateQuery &&
-    allPlaces.some(
-      (p) => p.city.state.slug.toLowerCase() === stateQuery.toLowerCase(),
-    )
-      ? Array.from(
-          new Map(
-            allPlaces
-              .filter((p) => {
-                const s = p.city.state.slug.toLowerCase();
-                return s === stateQuery.toLowerCase();
-              })
-              .map((p) => [p.city.id, p.city]),
-          ).values(),
-        )
-      : Array.from(new Map(allPlaces.map((p) => [p.city.id, p.city])).values());
-
-  const emptyMessage = 'No destinations found.';
+  // Compute per-state destination counts for Explore by State
+  const stateDestCounts: Record<string, number> = {};
+  for (const place of allPlaces) {
+    const sid = place.city.state.id;
+    stateDestCounts[sid] = (stateDestCounts[sid] ?? 0) + 1;
+  }
 
   return (
-    <section className="container mx-auto px-4 py-12">
-      <div className="mb-10 max-w-3xl">
-        <p className="text-sm font-medium uppercase tracking-[0.25em] text-muted-foreground">
-          Destinations
-        </p>
-        <h1 className="mt-3 text-4xl font-bold tracking-tight md:text-5xl">
-          Discover India&apos;s standout places
-        </h1>
-        <p className="mt-4 text-lg text-muted-foreground">
-          Browse destinations across states and cities using filters, or search
-          by name.
-        </p>
-      </div>
-
-      <div className="space-y-6">
-        <DestinationsFiltersClient states={states} cities={citiesForDropdown} />
-        <DestinationsDirectoryClient
-          places={filteredPlaces}
-          emptyMessage={emptyMessage}
-        />
-      </div>
-    </section>
+    <DestinationsPageClient
+      states={states}
+      allPlaces={allPlaces}
+      categories={categories.map((c) => ({
+        id: c.id,
+        name: c.name,
+        slug: c.slug,
+      }))}
+      stats={{
+        totalDestinations,
+        totalStates,
+        totalCities,
+        totalCategories,
+      }}
+      stateDestCounts={stateDestCounts}
+    />
   );
 }

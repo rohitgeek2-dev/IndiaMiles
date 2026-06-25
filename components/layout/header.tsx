@@ -157,10 +157,10 @@ export function Header() {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-700 ${
         isScrolled
-          ? 'bg-background/80 backdrop-blur-3xl shadow-[0_10px_40px_rgba(15,23,42,0.08)] border-b border-border/50'
-          : 'bg-transparent'
+          ? 'glass shadow-[0_10px_40px_rgba(15,23,42,0.08)] border-b border-border/50'
+          : 'bg-transparent backdrop-blur-0 border-b border-transparent'
       }`}
     >
       <div className="container mx-auto flex h-20 items-center justify-between gap-4 px-4">
