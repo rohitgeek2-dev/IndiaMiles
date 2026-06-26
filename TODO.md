@@ -24,4 +24,4 @@
 
 ## Data Note
 The page shows real data from the Neon PostgreSQL database via Prisma. 
-If stats show 0, the database needs to be seeded: `npx dotenv-cli -- npx tsx prisma/seed.ts`
+If stats show 0, the database needs to be seeded: `pnpm db:seed`

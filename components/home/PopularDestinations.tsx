@@ -21,13 +21,13 @@ function DestinationCard({ destination, index }: { destination: HomepageDestinat
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.2 }}
       transition={{ duration: 0.6, delay: index * 0.08 }}
-      className="group relative overflow-hidden rounded-[2rem] bg-white border border-[#E5E7EB] transition-all duration-500 hover:-translate-y-2 shadow-card hover:shadow-card-hover"
+      className="group relative overflow-hidden rounded-[2rem] bg-white dark:bg-[#0d1525] border border-[#E5E7EB] dark:border-white/10 transition-all duration-500 hover:-translate-y-2 shadow-card hover:shadow-card-hover"
     >
       {/* Image Container */}
       <div className="relative h-80 overflow-hidden">
         {isError ? (
-          <div className="flex h-full w-full items-center justify-center bg-gray-50">
-            <div className="flex flex-col items-center gap-2 text-gray-300">
+          <div className="flex h-full w-full items-center justify-center bg-gray-50 dark:bg-gray-900">
+            <div className="flex flex-col items-center gap-2 text-gray-300 dark:text-gray-600">
               <ImageOff className="h-10 w-10" />
               <span className="text-xs">Image unavailable</span>
             </div>
@@ -68,21 +68,21 @@ function DestinationCard({ destination, index }: { destination: HomepageDestinat
       <div className="space-y-5 p-6">
         {/* Quick Info Chips */}
         <div className="flex flex-wrap gap-2">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-teal-50 px-3 py-1.5 text-xs font-medium text-teal-DEFAULT border border-teal-100">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-teal-50 dark:bg-teal-950/30 px-3 py-1.5 text-xs font-medium text-teal-DEFAULT dark:text-teal-light border border-teal-100 dark:border-teal-900/50">
             <Calendar className="h-3 w-3" />
             {destination.bestSeason}
           </span>
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-50 px-3 py-1.5 text-xs font-medium text-gold-DEFAULT border border-amber-100">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-50 dark:bg-amber-950/30 px-3 py-1.5 text-xs font-medium text-gold-DEFAULT dark:text-gold-light border border-amber-100 dark:border-amber-900/50">
             <Clock className="h-3 w-3" />
             {destination.duration}
           </span>
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1.5 text-xs font-medium text-emerald-600 border border-emerald-100">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 dark:bg-emerald-950/30 px-3 py-1.5 text-xs font-medium text-emerald-600 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-900/50">
             <Tag className="h-3 w-3" />
             From {destination.startingPrice}
           </span>
         </div>
 
-        <p className="text-sm leading-7 text-[#4B5563]">
+        <p className="text-sm leading-7 text-[#4B5563] dark:text-gray-400">
           {destination.description}
         </p>
 
@@ -91,7 +91,7 @@ function DestinationCard({ destination, index }: { destination: HomepageDestinat
           {destination.tags.map((tag) => (
             <span
               key={tag}
-              className="inline-flex items-center rounded-full bg-gray-50 px-3 py-1 text-xs font-medium text-[#4B5563] border border-[#E5E7EB]"
+              className="inline-flex items-center rounded-full bg-gray-50 dark:bg-white/5 px-3 py-1 text-xs font-medium text-[#4B5563] dark:text-gray-300 border border-[#E5E7EB] dark:border-white/10"
             >
               {tag}
             </span>
@@ -99,10 +99,10 @@ function DestinationCard({ destination, index }: { destination: HomepageDestinat
         </div>
 
         {/* CTA */}
-        <div className="flex items-center justify-between border-t border-[#E5E7EB] pt-4">
-          <div className="flex items-center gap-1.5 text-sm text-[#4B5563]">
+        <div className="flex items-center justify-between border-t border-[#E5E7EB] dark:border-white/10 pt-4">
+          <div className="flex items-center gap-1.5 text-sm text-[#4B5563] dark:text-gray-400">
             <Star className="h-4 w-4 text-gold-DEFAULT" />
-            <span className="font-medium text-[#111827]">{destination.rating}</span>
+            <span className="font-medium text-[#111827] dark:text-white">{destination.rating}</span>
             <span>({destination.reviews})</span>
           </div>
           <Link
@@ -120,12 +120,12 @@ function DestinationCard({ destination, index }: { destination: HomepageDestinat
 
 export function PopularDestinations({ destinations }: PopularDestinationsProps) {
   return (
-    <section className="relative py-section-lg overflow-hidden bg-white">
+    <section className="relative py-section-lg overflow-hidden bg-white dark:bg-[#0a1120]">
       {/* Section divider */}
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold-DEFAULT/20 to-transparent" />
 
       {/* Subtle background warmth */}
-      <div className="absolute inset-0 bg-gradient-to-b from-amber-50/20 to-transparent pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-b from-amber-50/20 to-transparent dark:from-gold-DEFAULT/[0.02] dark:to-transparent pointer-events-none" />
       
       <div className="container mx-auto px-4">
         {/* Section Header */}
@@ -144,7 +144,7 @@ export function PopularDestinations({ destinations }: PopularDestinationsProps) 
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.05 }}
-              className="mt-3 text-heading-2 font-semibold text-[#111827] sm:text-display"
+              className="mt-3 text-heading-2 font-semibold text-[#111827] dark:text-white sm:text-display"
             >
               Discover handpicked
               <span className="block text-gradient-teal">luxury escapes</span>
@@ -155,7 +155,7 @@ export function PopularDestinations({ destinations }: PopularDestinationsProps) 
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
           >
-            <Button asChild variant="outline" className="rounded-full px-7 py-6 text-sm border-[#E5E7EB] text-[#4B5563] hover:bg-gray-50 hover:text-[#111827] transition-all duration-300">
+            <Button asChild variant="outline" className="rounded-full px-7 py-6 text-sm border-[#E5E7EB] dark:border-white/20 text-[#4B5563] dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/10 hover:text-[#111827] dark:hover:text-white transition-all duration-300">
               <Link href="/destinations">
                 Explore all destinations
                 <ArrowRight className="ml-2 h-4 w-4" />

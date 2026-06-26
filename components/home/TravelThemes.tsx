@@ -38,12 +38,12 @@ const iconMap: Record<string, React.ElementType> = {
 
 export function TravelThemes({ themes }: TravelThemesProps) {
   return (
-    <section className="relative py-section-xl bg-white">
+    <section className="relative py-section-xl bg-white dark:bg-[#0a1120]">
       {/* Section divider */}
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold-DEFAULT/20 to-transparent" />
 
       {/* Light ambiance */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(212,169,74,0.03)_0%,transparent_60%)] pointer-events-none" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(212,169,74,0.03)_0%,transparent_60%)] dark:bg-[radial-gradient(ellipse_at_top,rgba(212,169,74,0.05)_0%,transparent_60%)] pointer-events-none" />
 
       <div className="container mx-auto px-4">
         {/* Section header — left-aligned, editorial */}
@@ -61,7 +61,7 @@ export function TravelThemes({ themes }: TravelThemesProps) {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.08 }}
-            className="mt-4 text-heading-2 font-semibold text-[#111827] sm:text-display"
+            className="mt-4 text-heading-2 font-semibold text-[#111827] dark:text-white sm:text-display"
           >
             Every journey has a{' '}
             <span className="text-gradient-gold">unique story</span>.
@@ -71,7 +71,7 @@ export function TravelThemes({ themes }: TravelThemesProps) {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.12 }}
-            className="mt-4 text-lg leading-relaxed text-[#4B5563] max-w-xl"
+            className="mt-4 text-lg leading-relaxed text-[#4B5563] dark:text-gray-400 max-w-xl"
           >
             From royal heritage to Himalayan adventures — find the India
             experience that speaks to you.
@@ -103,7 +103,7 @@ export function TravelThemes({ themes }: TravelThemesProps) {
                     className="group h-full"
                   >
                     <Link href={theme.href} className="block h-full">
-                      <div className="relative flex h-[420px] w-full flex-col justify-end overflow-hidden rounded-[2rem] border border-[#E5E7EB] transition-all duration-500 hover:-translate-y-2 hover:shadow-card-hover shadow-card">
+                      <div className="relative flex h-[420px] w-full flex-col justify-end overflow-hidden rounded-[2rem] border border-[#E5E7EB] dark:border-white/10 transition-all duration-500 hover:-translate-y-2 hover:shadow-card-hover shadow-card dark:shadow-none dark:hover:shadow-[0_8px_30px_rgba(0,0,0,0.3)]">
                         {/* Background image */}
                         <div className="absolute inset-0">
                           <img
