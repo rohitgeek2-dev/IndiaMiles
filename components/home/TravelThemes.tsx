@@ -87,7 +87,7 @@ export function TravelThemes({ themes }: TravelThemesProps) {
           autoplayInterval={4000}
           className="w-full"
         >
-          <CarouselContent className="-ml-6 pt-5">
+          <CarouselContent className=" pt-5">
             {themes.map((theme, index) => {
               const IconComponent = iconMap[theme.icon] || Gem;
               return (
