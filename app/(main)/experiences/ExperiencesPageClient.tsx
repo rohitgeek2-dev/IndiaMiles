@@ -1,13 +1,19 @@
 'use client';
 
-import {
+import React, {
   useMemo,
   useState,
   useCallback,
   useRef,
   useEffect,
 } from 'react';
-import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
+import {
+  motion,
+  AnimatePresence,
+  useScroll,
+  useTransform,
+} from 'framer-motion';
+import Link from 'next/link';
 import {
   Search,
   MapPin,
@@ -21,26 +27,32 @@ import {
   Gem,
   Sparkles,
   Check,
+  ArrowRight,
+  Clock,
 } from 'lucide-react';
 import type { ExplorerPlace } from '@/services/travel-service';
-import type { State } from '@/lib/types';
-import { DestinationsDirectoryClient } from './DestinationsDirectoryClient';
 import { useDebounce } from '@/lib/hooks/use-debounce';
+import { PlaceGrid } from '@/components/explorer/PlaceGrid';
 
-type Category = { id: string; name: string; slug: string };
+type Category = {
+  id: string;
+  name: string;
+  slug: string;
+  description?: string;
+  imageUrl?: string;
+};
 type Stats = {
-  totalDestinations: number;
-  totalStates: number;
-  totalCities: number;
+  totalExperiences: number;
   totalCategories: number;
+  totalStates: number;
 };
 
 type Props = {
-  states: State[];
-  allPlaces: ExplorerPlace[];
   categories: Category[];
+  allPlaces: ExplorerPlace[];
+  trendingPlaces: ExplorerPlace[];
   stats: Stats;
-  stateDestCounts: Record<string, number>;
+  categoryPlaceCounts: Record<string, number>;
 };
 
 // ─── Helpers ────────────────────────────────────────────────────────────
@@ -48,9 +60,14 @@ function categoryIcon(name: string) {
   const lower = name.toLowerCase();
   if (lower.includes('beach')) return Palmtree;
   if (lower.includes('hill') || lower.includes('mountain')) return Mountain;
-  if (lower.includes('luxury') || lower.includes('premium')) return Gem;
+  if (
+    lower.includes('luxury') ||
+    lower.includes('premium') ||
+    lower.includes('heritage')
+  )
+    return Gem;
   if (lower.includes('trend') || lower.includes('popular')) return TrendingUp;
-  return Sparkles;
+  return Compass;
 }
 
 // ─── Animation Variants ─────────────────────────────────────────────────
@@ -65,14 +82,6 @@ const sectionVariants = {
       ease: [0.25, 0.1, 0.25, 1] as [number, number, number, number],
     },
   }),
-};
-
-const staggerContainer = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.06 },
-  },
 };
 
 const heroFadeUp = {
@@ -118,7 +127,8 @@ function PremiumSelect({
     return () => document.removeEventListener('mousedown', handleClick);
   }, []);
 
-  const selectedLabel = options.find((o) => o.value === value)?.label ?? placeholder;
+  const selectedLabel =
+    options.find((o) => o.value === value)?.label ?? placeholder;
 
   const filteredOptions = useMemo(
     () =>
@@ -145,7 +155,9 @@ function PremiumSelect({
         }`}
       >
         <Icon className="h-4 w-4 shrink-0 text-muted-foreground" />
-        <span className={`truncate ${value ? 'text-[#111827] font-medium' : 'text-muted-foreground'}`}>
+        <span
+          className={`truncate ${value ? 'text-[#111827] font-medium' : 'text-muted-foreground'}`}
+        >
           {selectedLabel}
         </span>
         <ChevronDown
@@ -210,88 +222,14 @@ function PremiumSelect({
   );
 }
 
-// ─── State Card Component ───────────────────────────────────────────────
-function StateCard({
-  state,
-  destCount,
-  isActive,
-  onSelect,
-}: {
-  state: State;
-  destCount: number;
-  isActive: boolean;
-  onSelect: () => void;
-}) {
-  const [imgError, setImgError] = useState(false);
-
-  return (
-    <motion.button
-      onClick={onSelect}
-      whileHover={{ y: -6, scale: 1.02 }}
-      whileTap={{ scale: 0.97 }}
-      className={`group relative flex flex-col overflow-hidden rounded-2xl border text-left transition-all duration-300 ${
-        isActive
-          ? 'border-gold-DEFAULT ring-2 ring-gold-DEFAULT/20 shadow-lg shadow-gold-DEFAULT/5'
-          : 'border-[#E5E7EB] shadow-sm hover:shadow-lg'
-      }`}
-    >
-      <div className="relative h-32 overflow-hidden bg-gradient-to-br from-amber-50 via-orange-50 to-rose-50">
-        {state.imageUrl && !imgError ? (
-          <img
-            src={state.imageUrl}
-            alt={state.name}
-            className="h-full w-full object-cover transition duration-500 group-hover:scale-110"
-            onError={() => setImgError(true)}
-            loading="lazy"
-          />
-        ) : (
-          <div className="flex h-full items-end p-4">
-            <span className="text-4xl font-black tracking-tight text-foreground/10">
-              {state.name.slice(0, 2).toUpperCase()}
-            </span>
-          </div>
-        )}
-
-        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent" />
-
-        {isActive && (
-          <div className="absolute right-2 top-2 flex h-6 w-6 items-center justify-center rounded-full bg-gold-DEFAULT shadow-md">
-            <Check className="h-3.5 w-3.5 text-white" />
-          </div>
-        )}
-
-        <div className="absolute bottom-2 left-3 right-3">
-          <h3 className="text-base font-bold text-white drop-shadow-sm">
-            {state.name}
-          </h3>
-          {state.description && (
-            <p className="mt-0.5 text-[10px] leading-tight text-white/70 line-clamp-1">
-              {state.description}
-            </p>
-          )}
-        </div>
-      </div>
-
-      <div className="flex items-center justify-between px-3 py-2.5">
-        <span className="text-xs text-muted-foreground">
-          {destCount} {destCount === 1 ? 'destination' : 'destinations'}
-        </span>
-        <span
-          className={`flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold transition-colors ${
-            isActive
-              ? 'bg-gold-DEFAULT text-white'
-              : 'bg-amber-50 text-amber-600 group-hover:bg-amber-100'
-          }`}
-        >
-          {destCount}
-        </span>
-      </div>
-    </motion.button>
-  );
-}
-
 // ─── Animated Counter ───────────────────────────────────────────────────
-function AnimatedCounter({ value, className = '' }: { value: number; className?: string }) {
+function AnimatedCounter({
+  value,
+  className = '',
+}: {
+  value: number;
+  className?: string;
+}) {
   return (
     <motion.span
       key={value}
@@ -305,24 +243,85 @@ function AnimatedCounter({ value, className = '' }: { value: number; className?:
   );
 }
 
+// ─── Trending Experience Card ───────────────────────────────────────────
+function TrendingCard({ place }: { place: ExplorerPlace }) {
+  const [imgError, setImgError] = useState(false);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="group shrink-0"
+    >
+      <Link
+        href={`/place/${place.slug}`}
+        className="flex w-[280px] sm:w-[320px] lg:w-[340px] shrink-0 overflow-hidden rounded-2xl border border-[#E5E7EB] bg-white shadow-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
+      >
+        <div className="relative h-44 w-40 shrink-0 overflow-hidden">
+          {place.imageUrl && !imgError ? (
+            <img
+              src={place.imageUrl}
+              alt={place.name}
+              className="h-full w-full object-cover transition duration-500 group-hover:scale-110"
+              onError={() => setImgError(true)}
+              loading="lazy"
+            />
+          ) : (
+            <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-amber-50 to-orange-50">
+              <Compass className="h-8 w-8 text-foreground/10" />
+            </div>
+          )}
+          <div className="absolute inset-0 bg-gradient-to-r from-black/30 to-transparent" />
+        </div>
+        <div className="flex flex-1 flex-col justify-center p-4">
+          <p className="text-xs font-medium uppercase tracking-wider text-gold-DEFAULT">
+            {place.categories[0]?.category.name ?? 'Experience'}
+          </p>
+          <h3 className="mt-1 text-sm font-semibold text-[#111827] line-clamp-2 group-hover:text-teal-600 transition-colors">
+            {place.name}
+          </h3>
+          <p className="mt-1 text-xs text-muted-foreground flex items-center gap-1">
+            <MapPin className="h-3 w-3 shrink-0" />
+            {place.city.name}, {place.city.state.name}
+          </p>
+          <div className="mt-2 flex items-center gap-3 text-[10px] text-muted-foreground">
+            {place.bestTimeToVisit && (
+              <span className="flex items-center gap-1">
+                <Clock className="h-3 w-3" />
+                {place.bestTimeToVisit}
+              </span>
+            )}
+            {place.trendingScore > 0 && (
+              <span className="flex items-center gap-1 text-amber-600">
+                <TrendingUp className="h-3 w-3" />
+                Trending
+              </span>
+            )}
+          </div>
+        </div>
+      </Link>
+    </motion.div>
+  );
+}
+
 // ─── Main Client Component ──────────────────────────────────────────────
-export function DestinationsPageClient({
-  states,
-  allPlaces,
+export function ExperiencesPageClient({
   categories,
+  allPlaces,
+  trendingPlaces,
   stats,
-  stateDestCounts,
+  categoryPlaceCounts,
 }: Props) {
   // ── Filter state ──────────────────────────────────────────────────────
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedState, setSelectedState] = useState('');
-  const [selectedCity, setSelectedCity] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
+  const [selectedState, setSelectedState] = useState('');
   const [showMobileFilters, setShowMobileFilters] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
   const heroRef = useRef<HTMLDivElement>(null);
+  const categorySectionRef = useRef<HTMLElement>(null);
 
   // ── Parallax effect for hero ──────────────────────────────────────────
   const { scrollY } = useScroll();
@@ -347,50 +346,31 @@ export function DestinationsPageClient({
     return () => document.removeEventListener('mousedown', handleClick);
   }, []);
 
-  // ── Compute cities ────────────────────────────────────────────────────
-  const citiesInSelectedState = useMemo(() => {
-    if (!selectedState) return [];
-    return Array.from(
-      new Map(
-        allPlaces
-          .filter(
-            (p) =>
-              p.city.state.slug.toLowerCase() === selectedState.toLowerCase(),
-          )
-          .map((p) => [p.city.id, p.city]),
-      ).values(),
+  // ── Compute available states from places ──────────────────────────────
+  const availableStates = useMemo(() => {
+    const map = new Map<string, { id: string; name: string; slug: string }>();
+    for (const place of allPlaces) {
+      const s = place.city.state;
+      if (!map.has(s.id)) {
+        map.set(s.id, { id: s.id, name: s.name, slug: s.slug });
+      }
+    }
+    return Array.from(map.values()).sort((a, b) =>
+      a.name.localeCompare(b.name),
     );
-  }, [allPlaces, selectedState]);
-
-  const allCities = useMemo(
-    () =>
-      Array.from(new Map(allPlaces.map((p) => [p.city.id, p.city])).values()),
-    [allPlaces],
-  );
-
-  const visibleCities = useMemo(
-    () => (selectedState ? citiesInSelectedState : allCities),
-    [selectedState, citiesInSelectedState, allCities],
-  );
+  }, [allPlaces]);
 
   // ── Filtered places ───────────────────────────────────────────────────
   const filteredPlaces = useMemo(() => {
     const q = debouncedSearch.trim().toLowerCase();
-    const st = selectedState.toLowerCase();
-    const ct = selectedCity.toLowerCase();
     const cat = selectedCategory.toLowerCase();
+    const st = selectedState.toLowerCase();
 
     return allPlaces.filter((place) => {
       if (st) {
         const ps = place.city.state.slug.toLowerCase();
         const pn = place.city.state.name.toLowerCase();
         if (ps !== st && pn !== st) return false;
-      }
-
-      if (ct) {
-        const cs = place.city.slug.toLowerCase();
-        const cn = place.city.name.toLowerCase();
-        if (cs !== ct && cn !== ct) return false;
       }
 
       if (cat) {
@@ -420,157 +400,20 @@ export function DestinationsPageClient({
 
       return true;
     });
-  }, [allPlaces, debouncedSearch, selectedState, selectedCity, selectedCategory]);
-
-  // ── Category counts ───────────────────────────────────────────────────
-  const categoryCounts = useMemo(() => {
-    const map = new Map<
-      string,
-      { id: string; slug: string; name: string; count: number }
-    >();
-    for (const place of allPlaces) {
-      for (const pc of place.categories) {
-        const existing = map.get(pc.category.id);
-        if (existing) {
-          existing.count++;
-        } else {
-          map.set(pc.category.id, {
-            id: pc.category.id,
-            slug: pc.category.slug,
-            name: pc.category.name,
-            count: 1,
-          });
-        }
-      }
-    }
-    return Array.from(map.values()).sort((a, b) => b.count - a.count);
-  }, [allPlaces]);
+  }, [allPlaces, debouncedSearch, selectedCategory, selectedState]);
 
   // ── Reset filters ─────────────────────────────────────────────────────
   const resetFilters = useCallback(() => {
     setSearchQuery('');
-    setSelectedState('');
-    setSelectedCity('');
     setSelectedCategory('');
+    setSelectedState('');
   }, []);
 
-  const isActiveFilter = useCallback(
-    (type: string) => {
-      switch (type) {
-        case 'search':
-          return !!searchQuery;
-        case 'state':
-          return !!selectedState;
-        case 'city':
-          return !!selectedCity;
-        case 'category':
-          return !!selectedCategory;
-        default:
-          return false;
-      }
-    },
-    [searchQuery, selectedState, selectedCity, selectedCategory],
-  );
+  const hasActiveFilters = !!(searchQuery || selectedCategory || selectedState);
 
-  const hasActiveFilters = !!(
-    searchQuery ||
-    selectedState ||
-    selectedCity ||
-    selectedCategory
-  );
-
-  const getSelectedLabel = useCallback(
-    (type: string) => {
-      switch (type) {
-        case 'state':
-          return states.find((s) => s.slug === selectedState)?.name ?? '';
-        case 'city':
-          return visibleCities.find((c) => c.slug === selectedCity)?.name ?? '';
-        case 'category':
-          return (
-            categories.find((c) => c.slug === selectedCategory)?.name ?? ''
-          );
-        default:
-          return '';
-      }
-    },
-    [states, visibleCities, categories, selectedState, selectedCity, selectedCategory],
-  );
-
-  const removeFilter = useCallback((type: string) => {
-    switch (type) {
-      case 'search':
-        setSearchQuery('');
-        break;
-      case 'state':
-        setSelectedState('');
-        setSelectedCity('');
-        break;
-      case 'city':
-        setSelectedCity('');
-        break;
-      case 'category':
-        setSelectedCategory('');
-        break;
-    }
-  }, []);
-
-  const scrollToGrid = useCallback(() => {
-    gridRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }, []);
-
-  const handleSuggestionClick = useCallback(
-    (label: string, type: string) => {
-      setSearchQuery(label);
-      setShowSuggestions(false);
-
-      if (type === 'state') {
-        const found = states.find(
-          (s) => s.name.toLowerCase() === label.toLowerCase(),
-        );
-        if (found) {
-          setSelectedState(found.slug);
-          setSelectedCity('');
-        }
-      } else if (type === 'category') {
-        const categoryMap: Record<string, string> = {
-          'beach destinations': 'beaches',
-          'hill stations': 'hill-stations',
-          'luxury experiences': 'luxury',
-        };
-        const slug =
-          categoryMap[label.toLowerCase()] ??
-          categories.find(
-            (c) => c.name.toLowerCase() === label.toLowerCase(),
-          )?.slug;
-        if (slug) setSelectedCategory(slug);
-      }
-
-      scrollToGrid();
-    },
-    [states, categories, scrollToGrid],
-  );
-
-  // ── Dropdown options ──────────────────────────────────────────────────
   const sortedCategories = useMemo(
     () => [...categories].sort((a, b) => a.name.localeCompare(b.name)),
     [categories],
-  );
-
-  const stateOptions = useMemo(
-    () => [
-      { value: '', label: 'All states' },
-      ...states.map((s) => ({ value: s.slug, label: s.name })),
-    ],
-    [states],
-  );
-
-  const cityOptions = useMemo(
-    () => [
-      { value: '', label: 'All cities' },
-      ...visibleCities.map((c) => ({ value: c.slug, label: c.name })),
-    ],
-    [visibleCities],
   );
 
   const categoryOptions = useMemo(
@@ -581,22 +424,43 @@ export function DestinationsPageClient({
     [sortedCategories],
   );
 
-  // Determine which suggestions to show
-  const showDefaultSuggestions = showSuggestions && !debouncedSearch;
+  const stateOptions = useMemo(
+    () => [
+      { value: '', label: 'All states' },
+      ...availableStates.map((s) => ({ value: s.slug, label: s.name })),
+    ],
+    [availableStates],
+  );
 
-  // Results summary text
   const resultsSummary = !hasActiveFilters
-    ? `Showing ${filteredPlaces.length} destination${filteredPlaces.length === 1 ? '' : 's'}`
+    ? `Showing ${filteredPlaces.length} experience${filteredPlaces.length === 1 ? '' : 's'}`
     : `Showing ${filteredPlaces.length} result${filteredPlaces.length === 1 ? '' : 's'}${debouncedSearch ? ` for "${debouncedSearch}"` : ''}`;
 
   const POPULAR_SUGGESTIONS = [
-    { label: 'Goa', icon: Palmtree, type: 'state' },
-    { label: 'Kerala', icon: Palmtree, type: 'state' },
-    { label: 'Rajasthan', icon: MapPin, type: 'state' },
-    { label: 'Beach Destinations', icon: Palmtree, type: 'category' },
-    { label: 'Hill Stations', icon: Mountain, type: 'category' },
-    { label: 'Luxury Experiences', icon: Gem, type: 'category' },
+    { label: 'Heritage Tours', icon: Gem, type: 'category' },
+    { label: 'Wildlife Safaris', icon: Mountain, type: 'category' },
+    { label: 'Beach Escapes', icon: Palmtree, type: 'category' },
+    { label: 'Wellness Retreats', icon: Sparkles, type: 'category' },
+    { label: 'Culinary Trails', icon: Compass, type: 'category' },
+    { label: 'Adventure', icon: TrendingUp, type: 'category' },
   ];
+
+  const handleSuggestionClick = useCallback(
+    (label: string, type: string) => {
+      setSearchQuery(label);
+      setShowSuggestions(false);
+
+      if (type === 'category') {
+        const found = sortedCategories.find(
+          (c) => c.name.toLowerCase() === label.toLowerCase(),
+        );
+        if (found) setSelectedCategory(found.slug);
+      }
+
+      gridRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    },
+    [sortedCategories],
+  );
 
   return (
     <>
@@ -608,15 +472,12 @@ export function DestinationsPageClient({
         className="relative flex min-h-screen items-center overflow-hidden bg-[#050a14]"
       >
         {/* Background Image with Parallax */}
-        <motion.div
-          style={{ y: heroParallaxY }}
-          className="absolute inset-0"
-        >
+        <motion.div style={{ y: heroParallaxY }} className="absolute inset-0">
           <div
             className="absolute inset-0 bg-cover bg-center bg-no-repeat"
             style={{
               backgroundImage:
-                'url(https://images.unsplash.com/photo-1566837945700-30057527ade0?auto=format&fit=crop&w=1920&q=85)',
+                'url(https://images.unsplash.com/photo-1599661046289-e31897846e41?auto=format&fit=crop&w=1920&q=85)',
             }}
           />
           {/* Dark Overlay */}
@@ -645,7 +506,7 @@ export function DestinationsPageClient({
             >
               <span className="h-px w-8 bg-gold-DEFAULT/60" />
               <span className="text-xs font-medium uppercase tracking-[0.35em] text-gold-DEFAULT">
-                India Travel Guide
+                Curated Experiences
               </span>
               <span className="h-px w-8 bg-gold-DEFAULT/60" />
             </motion.div>
@@ -658,9 +519,9 @@ export function DestinationsPageClient({
               variants={heroFadeUp}
             >
               <h1 className="font-serif text-5xl font-light leading-[1.08] tracking-tight text-white md:text-7xl lg:text-8xl">
-                Explore India's
+                Discover Signature
                 <span className="mt-2 block bg-gradient-to-r from-gold-DEFAULT via-gold-light to-gold-DEFAULT bg-clip-text text-transparent">
-                  finest destinations
+                  travel moments
                 </span>
               </h1>
             </motion.div>
@@ -673,8 +534,9 @@ export function DestinationsPageClient({
               variants={heroFadeUp}
               className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-white/70 md:text-lg"
             >
-              From the Himalayan peaks to Goa's golden beaches — browse
-              handpicked destinations curated for the discerning traveller.
+              Immerse yourself in handpicked luxury experiences — from heritage
+              palace stays and wildlife encounters to wellness retreats and
+              gourmet culinary journeys across India.
             </motion.p>
 
             {/* ── Glassmorphism Search Bar ── */}
@@ -700,8 +562,8 @@ export function DestinationsPageClient({
                   onFocus={() => {
                     if (!searchQuery) setShowSuggestions(true);
                   }}
-                  placeholder="Search destinations, cities, states..."
-                  aria-label="Search destinations"
+                  placeholder="Search experiences, categories, states..."
+                  aria-label="Search experiences"
                   className="h-14 flex-1 bg-transparent pr-4 text-sm text-white/90 outline-none placeholder:text-white/40"
                 />
                 {searchQuery && (
@@ -725,7 +587,7 @@ export function DestinationsPageClient({
 
               {/* Search Suggestions - Glassmorphism theme */}
               <AnimatePresence>
-                {showDefaultSuggestions && (
+                {showSuggestions && !debouncedSearch && (
                   <motion.div
                     initial={{ opacity: 0, y: -10, scale: 0.97 }}
                     animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -735,7 +597,7 @@ export function DestinationsPageClient({
                   >
                     <div className="p-3">
                       <p className="mb-2 px-2 text-[10px] font-semibold uppercase tracking-wider text-white/40">
-                        Popular destinations
+                        Popular experiences
                       </p>
                       <div className="space-y-0.5">
                         {POPULAR_SUGGESTIONS.map((suggestion) => {
@@ -773,18 +635,18 @@ export function DestinationsPageClient({
               initial="hidden"
               animate="visible"
               variants={heroFadeUp}
-              className="mx-auto mt-10 grid max-w-3xl grid-cols-2 gap-3 md:grid-cols-4 md:gap-5"
+              className="mx-auto mt-10 grid max-w-2xl grid-cols-3 gap-3 md:gap-5"
             >
               {[
-                { label: 'Destinations', value: stats.totalDestinations },
-                { label: 'States & UTs', value: stats.totalStates },
-                { label: 'Cities', value: stats.totalCities },
+                { label: 'Experiences', value: stats.totalExperiences },
                 { label: 'Categories', value: stats.totalCategories },
+                { label: 'States & UTs', value: stats.totalStates },
               ].map((stat) => (
                 <div
                   key={stat.label}
                   className="group relative rounded-2xl border border-white/[0.08] bg-white/[0.06] px-3 py-4 text-center backdrop-blur-xl transition-all duration-500 hover:border-gold-DEFAULT/20 hover:bg-white/[0.10] hover:shadow-lg hover:shadow-gold-DEFAULT/[0.03] md:px-5 md:py-5"
                 >
+                  {/* Glow effect on hover */}
                   <div className="pointer-events-none absolute inset-0 rounded-2xl opacity-0 transition-opacity duration-500 group-hover:opacity-100">
                     <div className="absolute inset-0 rounded-2xl bg-gradient-to-b from-gold-DEFAULT/[0.03] to-transparent" />
                   </div>
@@ -821,6 +683,134 @@ export function DestinationsPageClient({
         </motion.div>
       </section>
 
+      {/* ─── TRENDING EXPERIENCES ──────────────────────────────────────── */}
+      {trendingPlaces.length > 0 && (
+        <motion.section
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.2 }}
+          variants={sectionVariants}
+          custom={0}
+          className="container mx-auto px-4 pb-8 pt-10 md:pb-12 md:pt-16"
+        >
+          <div className="mb-6 flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium uppercase tracking-[0.3em] text-gold-DEFAULT/70">
+                Trending Now
+              </p>
+              <h2 className="mt-1 text-2xl font-bold tracking-tight text-[#111827] md:text-3xl">
+                Most sought-after experiences
+              </h2>
+            </div>
+            <Link
+              href="/destinations"
+              className="hidden items-center gap-1.5 rounded-full border border-[#E5E7EB] bg-white px-4 py-2 text-xs font-medium text-muted-foreground shadow-sm transition hover:border-gold-DEFAULT/30 hover:text-gold-DEFAULT sm:flex"
+            >
+              View all
+              <ArrowRight className="h-3 w-3" />
+            </Link>
+          </div>
+
+          <div className="flex w-full gap-4 flex-wrap py-4 pl-1 pr-1 md:pr-8 scrollbar-none">
+            {trendingPlaces.map((place) => (
+              <TrendingCard key={place.id} place={place} />
+            ))}
+          </div>
+        </motion.section>
+      )}
+
+      {/* ─── BROWSE BY CATEGORY ────────────────────────────────────────── */}
+      {sortedCategories.length > 0 && (
+        <motion.section
+          ref={categorySectionRef}
+          custom={1}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.2 }}
+          variants={sectionVariants}
+          className="container mx-auto px-4 pb-8 md:pb-12"
+        >
+          <div className="mb-6 text-center">
+            <p className="text-sm font-medium uppercase tracking-[0.3em] text-gold-DEFAULT/70">
+              Browse by category
+            </p>
+            <h2 className="mt-1 text-2xl font-bold tracking-tight text-[#111827] md:text-3xl">
+              Find your perfect experience
+            </h2>
+            <p className="mx-auto mt-2 max-w-xl text-sm text-muted-foreground">
+              Explore India through curated categories — from heritage and
+              wildlife to culinary and wellness.
+            </p>
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {sortedCategories.map((category) => (
+              <button
+                key={category.id}
+                onClick={() => {
+                  setSelectedCategory(
+                    selectedCategory === category.slug ? '' : category.slug,
+                  );
+                  gridRef.current?.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start',
+                  });
+                }}
+                className={`group relative flex flex-col overflow-hidden rounded-2xl border text-left transition-all duration-300 ${
+                  selectedCategory === category.slug
+                    ? 'border-gold-DEFAULT ring-2 ring-gold-DEFAULT/20 shadow-lg shadow-gold-DEFAULT/5'
+                    : 'border-[#E5E7EB] shadow-sm hover:shadow-lg hover:-translate-y-1'
+                }`}
+              >
+                <div className="relative h-36 overflow-hidden bg-gradient-to-br from-amber-50 via-orange-50 to-rose-50">
+                  {category.imageUrl ? (
+                    <img
+                      src={category.imageUrl}
+                      alt={category.name}
+                      className="h-full w-full object-cover transition duration-500 group-hover:scale-110"
+                      loading="lazy"
+                    />
+                  ) : (
+                    <div className="flex h-full items-center justify-center">
+                      {React.createElement(categoryIcon(category.name), {
+                        className: 'h-14 w-14 text-foreground/10',
+                      })}
+                    </div>
+                  )}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent" />
+                  {selectedCategory === category.slug && (
+                    <div className="absolute right-2 top-2 flex h-6 w-6 items-center justify-center rounded-full bg-gold-DEFAULT shadow-md">
+                      <Check className="h-3.5 w-3.5 text-white" />
+                    </div>
+                  )}
+                  <div className="absolute bottom-3 left-4 right-4">
+                    <h3 className="text-lg font-bold text-white drop-shadow-sm">
+                      {category.name}
+                    </h3>
+                    {category.description && (
+                      <p className="mt-0.5 text-xs leading-tight text-white/70 line-clamp-1">
+                        {category.description}
+                      </p>
+                    )}
+                  </div>
+                </div>
+                <div className="flex items-center justify-between px-4 py-3">
+                  <span className="text-xs text-muted-foreground">
+                    {categoryPlaceCounts[category.id] ?? 0}{' '}
+                    {(categoryPlaceCounts[category.id] ?? 0) === 1
+                      ? 'experience'
+                      : 'experiences'}
+                  </span>
+                  <span className="flex h-7 w-7 items-center justify-center rounded-full bg-amber-50 text-xs font-bold text-amber-600 transition-colors group-hover:bg-amber-100">
+                    {categoryPlaceCounts[category.id] ?? 0}
+                  </span>
+                </div>
+              </button>
+            ))}
+          </div>
+        </motion.section>
+      )}
+
       {/* ─── FILTERS + RESULTS ─────────────────────────────────────────── */}
       <section ref={gridRef} className="container mx-auto px-4 py-8 md:py-10">
         {/* ── Filter Bar ── */}
@@ -832,33 +822,21 @@ export function DestinationsPageClient({
         >
           <div className="hidden items-center gap-3 md:flex">
             <PremiumSelect
-              label="State"
-              icon={MapPin}
-              value={selectedState}
-              options={stateOptions}
-              placeholder="All states"
-              onChange={(val) => {
-                setSelectedState(val);
-                setSelectedCity('');
-              }}
-            />
-
-            <PremiumSelect
-              label="City"
-              icon={MapPin}
-              value={selectedCity}
-              options={cityOptions}
-              placeholder="All cities"
-              onChange={setSelectedCity}
-            />
-
-            <PremiumSelect
               label="Category"
               icon={Compass}
               value={selectedCategory}
               options={categoryOptions}
               placeholder="All categories"
               onChange={setSelectedCategory}
+            />
+
+            <PremiumSelect
+              label="State"
+              icon={MapPin}
+              value={selectedState}
+              options={stateOptions}
+              placeholder="All states"
+              onChange={setSelectedState}
             />
 
             <AnimatePresence>
@@ -888,7 +866,11 @@ export function DestinationsPageClient({
                 Filters
                 {hasActiveFilters && (
                   <span className="flex h-5 w-5 items-center justify-center rounded-full bg-gold-DEFAULT text-[10px] font-bold text-white">
-                    {[searchQuery, selectedState, selectedCity, selectedCategory].filter(Boolean).length}
+                    {
+                      [searchQuery, selectedCategory, selectedState].filter(
+                        Boolean,
+                      ).length
+                    }
                   </span>
                 )}
               </div>
@@ -906,30 +888,6 @@ export function DestinationsPageClient({
                   className="mt-3 space-y-3 overflow-hidden"
                 >
                   <select
-                    value={selectedState}
-                    onChange={(e) => { setSelectedState(e.target.value); setSelectedCity(''); }}
-                    aria-label="Filter by state"
-                    className="h-11 w-full appearance-none rounded-xl border border-[#E5E7EB] bg-white px-4 text-sm text-[#111827] outline-none"
-                  >
-                    <option value="">All states</option>
-                    {states.map((s) => (
-                      <option key={s.id} value={s.slug}>{s.name}</option>
-                    ))}
-                  </select>
-
-                  <select
-                    value={selectedCity}
-                    onChange={(e) => setSelectedCity(e.target.value)}
-                    aria-label="Filter by city"
-                    className="h-11 w-full appearance-none rounded-xl border border-[#E5E7EB] bg-white px-4 text-sm text-[#111827] outline-none"
-                  >
-                    <option value="">All cities</option>
-                    {visibleCities.map((c) => (
-                      <option key={c.id} value={c.slug}>{c.name}</option>
-                    ))}
-                  </select>
-
-                  <select
                     value={selectedCategory}
                     onChange={(e) => setSelectedCategory(e.target.value)}
                     aria-label="Filter by category"
@@ -937,7 +895,23 @@ export function DestinationsPageClient({
                   >
                     <option value="">All categories</option>
                     {sortedCategories.map((c) => (
-                      <option key={c.id} value={c.slug}>{c.name}</option>
+                      <option key={c.id} value={c.slug}>
+                        {c.name}
+                      </option>
+                    ))}
+                  </select>
+
+                  <select
+                    value={selectedState}
+                    onChange={(e) => setSelectedState(e.target.value)}
+                    aria-label="Filter by state"
+                    className="h-11 w-full appearance-none rounded-xl border border-[#E5E7EB] bg-white px-4 text-sm text-[#111827] outline-none"
+                  >
+                    <option value="">All states</option>
+                    {availableStates.map((s) => (
+                      <option key={s.id} value={s.slug}>
+                        {s.name}
+                      </option>
                     ))}
                   </select>
 
@@ -960,196 +934,77 @@ export function DestinationsPageClient({
             </AnimatePresence>
           </div>
 
-          {/* ── Active Filters Summary Chips + Results Count ── */}
-          <div className="mt-4 space-y-2">
+          {/* ── Results Count ── */}
+          <div className="mt-4">
             <p className="text-sm font-medium text-[#111827]">
               {resultsSummary}
             </p>
-
-            <AnimatePresence>
-              {hasActiveFilters && (
-                <motion.div
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  className="flex flex-wrap items-center gap-2"
-                >
-                  {isActiveFilter('search') && searchQuery && (
-                    <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-200 bg-amber-50/60 px-3 py-1 text-xs font-medium text-gold-dark">
-                      <Search className="h-3 w-3" />
-                      {searchQuery}
-                      <button onClick={() => removeFilter('search')} className="ml-0.5 rounded-full p-0.5 transition hover:bg-amber-100">
-                        <X className="h-3 w-3" />
-                      </button>
-                    </span>
-                  )}
-
-                  {isActiveFilter('state') && selectedState && (
-                    <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50/60 px-3 py-1 text-xs font-medium text-emerald-700">
-                      <MapPin className="h-3 w-3" />
-                      {getSelectedLabel('state')}
-                      <button onClick={() => removeFilter('state')} className="ml-0.5 rounded-full p-0.5 transition hover:bg-emerald-100">
-                        <X className="h-3 w-3" />
-                      </button>
-                    </span>
-                  )}
-
-                  {isActiveFilter('city') && selectedCity && (
-                    <span className="inline-flex items-center gap-1.5 rounded-full border border-sky-200 bg-sky-50/60 px-3 py-1 text-xs font-medium text-sky-700">
-                      <MapPin className="h-3 w-3" />
-                      {getSelectedLabel('city')}
-                      <button onClick={() => removeFilter('city')} className="ml-0.5 rounded-full p-0.5 transition hover:bg-sky-100">
-                        <X className="h-3 w-3" />
-                      </button>
-                    </span>
-                  )}
-
-                  {isActiveFilter('category') && selectedCategory && (
-                    <span className="inline-flex items-center gap-1.5 rounded-full border border-violet-200 bg-violet-50/60 px-3 py-1 text-xs font-medium text-violet-700">
-                      <Compass className="h-3 w-3" />
-                      {getSelectedLabel('category')}
-                      <button onClick={() => removeFilter('category')} className="ml-0.5 rounded-full p-0.5 transition hover:bg-violet-100">
-                        <X className="h-3 w-3" />
-                      </button>
-                    </span>
-                  )}
-                </motion.div>
-              )}
-            </AnimatePresence>
           </div>
         </motion.div>
 
-        {/* ── Directory Grid ── */}
-        <DestinationsDirectoryClient
-          places={filteredPlaces}
-          emptyMessage="No destinations match your search."
-          hasActiveFilters={hasActiveFilters}
-          onResetFilters={resetFilters}
-          onExploreStates={() => {
-            const stateSection = document.getElementById('explore-by-state');
-            if (stateSection) {
-              stateSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
-          }}
-          isLoading={!hasRealData && filteredPlaces.length === 0}
-        />
+        {/* ── Place Grid ── */}
+        <div>
+          {!hasRealData && filteredPlaces.length === 0 ? (
+            <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <div
+                  key={i}
+                  className="overflow-hidden rounded-2xl border border-[#E5E7EB] bg-white shadow-sm"
+                >
+                  <div className="h-48 skeleton" />
+                  <div className="space-y-2 p-5">
+                    <div className="skeleton h-4 w-20" />
+                    <div className="skeleton h-5 w-3/4" />
+                    <div className="skeleton h-4 w-1/2" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <PlaceGrid
+              places={filteredPlaces}
+              emptyMessage="No experiences match your search criteria. Try adjusting your filters."
+            />
+          )}
+        </div>
       </section>
 
-      {/* ─── BROWSE BY CATEGORY ────────────────────────────────────────── */}
-      {categoryCounts.length > 0 && (
-        <motion.section
-          custom={1}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.2 }}
-          variants={sectionVariants}
-          className="container mx-auto px-4 pb-16 md:pb-20"
-        >
-          <div className="mb-8 text-center">
-            <p className="text-sm uppercase tracking-[0.3em] text-gold-DEFAULT/70">
-              Curated Collections
+      {/* ─── CALL TO ACTION ────────────────────────────────────────────── */}
+      <section className="container mx-auto px-4 pb-16 md:pb-20">
+        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-amber-50 via-orange-50/40 to-teal-50/40 px-8 py-14 text-center md:px-16 md:py-20">
+          <div className="pointer-events-none absolute -right-32 -top-32 h-64 w-64 rounded-full bg-gold-DEFAULT/5 blur-3xl" />
+          <div className="pointer-events-none absolute -bottom-32 -left-32 h-64 w-64 rounded-full bg-teal-DEFAULT/5 blur-3xl" />
+
+          <div className="relative z-10 mx-auto max-w-2xl">
+            <p className="text-sm font-medium uppercase tracking-[0.3em] text-gold-DEFAULT/70">
+              Curated just for you
             </p>
-            <h2 className="mt-2 text-2xl font-bold text-[#111827] md:text-3xl">
-              Browse by category
+            <h2 className="mt-3 text-3xl font-bold tracking-tight text-[#111827] md:text-4xl">
+              Can't find what you're looking for?
             </h2>
-            <p className="mx-auto mt-2 max-w-lg text-sm leading-relaxed text-[#4B5563]">
-              Explore destinations by your travel interest.
+            <p className="mx-auto mt-4 max-w-lg text-sm text-muted-foreground">
+              Our travel concierge team can craft a bespoke experience tailored
+              to your preferences. From private heritage dinners to custom
+              wellness journeys — let us design your perfect India escape.
             </p>
+            <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
+              <Link
+                href="/contact"
+                className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 px-8 py-3.5 text-sm font-semibold text-white shadow-lg shadow-amber-500/20 transition hover:shadow-xl hover:from-amber-600 hover:to-orange-600"
+              >
+                Plan My Experience
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+              <Link
+                href="/destinations"
+                className="inline-flex items-center gap-2 rounded-full border border-[#E5E7EB] bg-white px-8 py-3.5 text-sm font-semibold text-[#111827] shadow-sm transition hover:shadow-md hover:border-gold-DEFAULT/30"
+              >
+                Browse All Destinations
+              </Link>
+            </div>
           </div>
-
-          <motion.div
-            variants={staggerContainer}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            className="flex flex-wrap justify-center gap-3"
-          >
-            {categoryCounts.map((cat) => {
-              const Icon = categoryIcon(cat.name);
-              return (
-                <motion.button
-                  key={cat.id}
-                  onClick={() =>
-                    setSelectedCategory(
-                      selectedCategory === cat.slug ? '' : cat.slug,
-                    )
-                  }
-                  variants={{
-                    hidden: { opacity: 0, y: 15 },
-                    visible: { opacity: 1, y: 0 },
-                  }}
-                  whileHover={{ y: -3 }}
-                  className={`inline-flex items-center gap-2 rounded-full border px-5 py-2.5 text-sm font-medium transition-all duration-300 ${
-                    selectedCategory === cat.slug
-                      ? 'border-gold-DEFAULT bg-gold-DEFAULT/10 text-gold-dark shadow-md shadow-gold-DEFAULT/5'
-                      : 'border-[#E5E7EB] bg-white text-[#4B5563] shadow-sm hover:border-gold-DEFAULT/40 hover:bg-amber-50/40 hover:text-[#111827] hover:shadow-md'
-                  }`}
-                >
-                  <Icon className="h-4 w-4" />
-                  {cat.name}
-                  <span className={`ml-1 rounded-full px-2 py-0.5 text-xs tabular-nums ${
-                    selectedCategory === cat.slug ? 'bg-gold-DEFAULT/15' : 'bg-[#111827]/5'
-                  }`}>
-                    {cat.count}
-                  </span>
-                </motion.button>
-              );
-            })}
-          </motion.div>
-        </motion.section>
-      )}
-
-      {/* ─── EXPLORE BY STATE ──────────────────────────────────────────── */}
-      <motion.section
-        id="explore-by-state"
-        custom={2}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.1 }}
-        variants={sectionVariants}
-        className="border-t border-[#E5E7EB] bg-gradient-to-b from-white to-amber-50/20 py-16 md:py-20"
-      >
-        <div className="container mx-auto px-4">
-          <div className="mb-10 text-center">
-            <p className="text-sm uppercase tracking-[0.3em] text-gold-DEFAULT/70">
-              Regional Guide
-            </p>
-            <h2 className="mt-2 text-2xl font-bold text-[#111827] md:text-3xl">
-              Explore by state
-            </h2>
-            <p className="mx-auto mt-2 max-w-lg text-sm leading-relaxed text-[#4B5563]">
-              Pick a state or union territory to discover its unique destinations.
-            </p>
-          </div>
-
-          <motion.div
-            variants={staggerContainer}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.1 }}
-            className="mx-auto grid max-w-5xl grid-cols-2 gap-3 sm:grid-cols-3 md:gap-4 lg:grid-cols-4"
-          >
-            {states.map((state) => {
-              const destCount = stateDestCounts[state.id] ?? 0;
-              return (
-                <StateCard
-                  key={state.id}
-                  state={state}
-                  destCount={destCount}
-                  isActive={selectedState === state.slug}
-                  onSelect={() => {
-                    setSelectedState(
-                      selectedState === state.slug ? '' : state.slug,
-                    );
-                    setSelectedCity('');
-                    scrollToGrid();
-                  }}
-                />
-              );
-            })}
-          </motion.div>
         </div>
-      </motion.section>
+      </section>
     </>
   );
 }

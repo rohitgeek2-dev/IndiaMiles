@@ -1,23 +1,104 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence, LayoutGroup } from 'framer-motion';
-import { ArrowRight, ImageOff, Star, Sparkles, TrendingUp } from 'lucide-react';
+import {
+  ArrowRight,
+  ImageOff,
+  Star,
+  Sparkles,
+  TrendingUp,
+  Mountain,
+  Palmtree,
+  Landmark,
+  Waves,
+  Trees,
+  Building2,
+} from 'lucide-react';
 import type { Recommendation } from '@/lib/homepage-data';
+import { resolveCuratedPicksImage } from '@/lib/curated-picks-image-resolver';
 
 type PersonalizedRecsProps = {
   recommendedForYou: Recommendation[];
   trendingThisMonth: Recommendation[];
 };
 
-function RecImage({ src, alt }: { src: string; alt: string }) {
+const locationFallbacks: Record<
+  string,
+  { label: string; gradient: string; Icon: React.ElementType }
+> = {
+  Karnataka: {
+    label: 'Mysore Palace & Coorg',
+    gradient: 'from-emerald-600/80 to-green-800/80',
+    Icon: Landmark,
+  },
+  'Andaman & Nicobar': {
+    label: 'Andaman Islands',
+    gradient: 'from-cyan-600/80 to-blue-800/80',
+    Icon: Palmtree,
+  },
+  Ladakh: {
+    label: 'Ladakh Himalayas',
+    gradient: 'from-orange-600/80 to-red-800/80',
+    Icon: Mountain,
+  },
+  Uttarakhand: {
+    label: 'Rishikesh Himalayas',
+    gradient: 'from-teal-600/80 to-green-800/80',
+    Icon: Waves,
+  },
+  'Jaipur, Jodhpur, Udaipur': {
+    label: 'Rajasthan Circuit',
+    gradient: 'from-amber-600/80 to-orange-800/80',
+    Icon: Building2,
+  },
+  'Alleppey, Kumarakom': {
+    label: 'Kerala Backwaters',
+    gradient: 'from-emerald-500/80 to-teal-800/80',
+    Icon: Trees,
+  },
+  'North & South Goa': {
+    label: 'Goa Beaches',
+    gradient: 'from-blue-500/80 to-cyan-800/80',
+    Icon: Palmtree,
+  },
+};
+
+function RecImage({
+  src,
+  alt,
+  location,
+}: {
+  src: string;
+  alt: string;
+  location: string;
+}) {
   const [isError, setIsError] = useState(false);
   const handleError = useCallback(() => setIsError(true), []);
-  if (isError) {
+
+  const fallback = useMemo(() => {
     return (
-      <div className="flex h-full w-full items-center justify-center bg-gray-50">
-        <ImageOff className="h-8 w-8 text-gray-300" />
+      locationFallbacks[location] || {
+        label: location,
+        gradient: 'from-gray-600/80 to-gray-800/80',
+        Icon: ImageOff,
+      }
+    );
+  }, [location]);
+
+  if (isError) {
+    const { label, gradient, Icon } = fallback;
+    return (
+      <div
+        className={`flex h-full w-full items-center justify-center bg-gradient-to-br ${gradient}`}
+      >
+        <div className="flex flex-col items-center gap-2 text-white/80">
+          <Icon className="h-10 w-10" />
+          <span className="text-xs font-medium tracking-wide uppercase">
+            {label}
+          </span>
+        </div>
       </div>
     );
   }
@@ -34,10 +115,14 @@ function RecImage({ src, alt }: { src: string; alt: string }) {
 
 type TabType = 'recommended' | 'trending';
 
-export function PersonalizedRecs({ recommendedForYou, trendingThisMonth }: PersonalizedRecsProps) {
+export function PersonalizedRecs({
+  recommendedForYou,
+  trendingThisMonth,
+}: PersonalizedRecsProps) {
   const [activeTab, setActiveTab] = useState<TabType>('recommended');
 
-  const currentItems = activeTab === 'recommended' ? recommendedForYou : trendingThisMonth;
+  const currentItems =
+    activeTab === 'recommended' ? recommendedForYou : trendingThisMonth;
   const tabs: { id: TabType; label: string; icon: React.ElementType }[] = [
     { id: 'recommended', label: 'Recommended for You', icon: Sparkles },
     { id: 'trending', label: 'Trending This Month', icon: TrendingUp },
@@ -66,8 +151,7 @@ export function PersonalizedRecs({ recommendedForYou, trendingThisMonth }: Perso
             transition={{ delay: 0.05 }}
             className="mt-4 text-heading-2 font-semibold text-[#111827] sm:text-display"
           >
-            Designed around{' '}
-            <span className="text-gradient-teal">you</span>.
+            Designed around <span className="text-gradient-teal">you</span>.
           </motion.h2>
         </div>
 
@@ -101,7 +185,12 @@ export function PersonalizedRecs({ recommendedForYou, trendingThisMonth }: Perso
                       <motion.div
                         layoutId="activeTab"
                         className="absolute inset-0 rounded-full bg-[#EAC587] shadow-[0_2px_12px_rgba(234,197,135,0.35)]"
-                        transition={{ type: 'spring', stiffness: 500, damping: 35, mass: 0.9 }}
+                        transition={{
+                          type: 'spring',
+                          stiffness: 500,
+                          damping: 35,
+                          mass: 0.9,
+                        }}
                       />
                     )}
                     <span className="relative z-10 flex items-center gap-2">
@@ -137,7 +226,16 @@ export function PersonalizedRecs({ recommendedForYou, trendingThisMonth }: Perso
                   <div className="overflow-hidden rounded-[1.5rem] border border-[#E5E7EB] bg-white transition-all duration-500 hover:-translate-y-1 hover:shadow-card-hover shadow-card">
                     {/* Image container */}
                     <div className="relative h-52 overflow-hidden">
-                      <RecImage src={item.imageUrl} alt={item.title} />
+                      {(() => {
+                        const { src, alt } = resolveCuratedPicksImage(item);
+                        return (
+                          <RecImage
+                            src={src}
+                            alt={alt}
+                            location={item.location}
+                          />
+                        );
+                      })()}
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                       {/* Price tag */}
                       <div className="absolute bottom-3 left-3 rounded-full bg-white/90 px-3 py-1.5 text-xs font-semibold text-[#111827] backdrop-blur-sm border border-[#E5E7EB] shadow-sm">
@@ -156,13 +254,17 @@ export function PersonalizedRecs({ recommendedForYou, trendingThisMonth }: Perso
                         <h3 className="text-base font-semibold text-[#111827] transition-colors group-hover:text-gold-DEFAULT">
                           {item.title}
                         </h3>
-                        <p className="mt-0.5 text-xs text-[#4B5563]">{item.location}</p>
+                        <p className="mt-0.5 text-xs text-[#4B5563]">
+                          {item.location}
+                        </p>
                       </div>
 
                       {/* Reason chip */}
                       <div className="inline-flex items-center gap-1.5 rounded-lg bg-amber-50 px-3 py-2 border border-amber-100">
                         <Sparkles className="h-3 w-3 text-gold-DEFAULT" />
-                        <span className="text-xs font-medium text-[#4B5563]">{item.reason}</span>
+                        <span className="text-xs font-medium text-[#4B5563]">
+                          {item.reason}
+                        </span>
                       </div>
 
                       <span className="inline-flex items-center gap-1.5 text-sm font-medium text-gold-DEFAULT transition-all duration-300 group-hover:gap-2">

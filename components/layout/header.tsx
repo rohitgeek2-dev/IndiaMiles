@@ -1,10 +1,16 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+  SheetClose,
+} from '@/components/ui/sheet';
 import {
   Menu,
   ChevronDown,
@@ -13,6 +19,7 @@ import {
   MapPin,
   Compass,
   ArrowRight,
+  X,
 } from 'lucide-react';
 import { DarkModeToggle } from '@/components/common/DarkModeToggle';
 
@@ -125,8 +132,10 @@ const navLinks = [
 ];
 
 export function Header() {
+  const pathname = usePathname();
   const [isScrolled, setIsScrolled] = useState(false);
   const [openMenu, setOpenMenu] = useState<string | null>(null);
+  const [isMobileOpen, setIsMobileOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement | null>(null);
   const [mounted, setMounted] = useState(false);
 
@@ -153,15 +162,35 @@ export function Header() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  // Lock body scroll when mobile menu is open
+  useEffect(() => {
+    if (isMobileOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isMobileOpen]);
+
+  const handleMobileLinkClick = useCallback(() => {
+    setIsMobileOpen(false);
+  }, []);
+
   if (!mounted) return null;
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-700 ${
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
         isScrolled
-          ? 'glass shadow-[0_10px_40px_rgba(15,23,42,0.08)] border-b border-border/50'
-          : 'bg-transparent backdrop-blur-0 border-b border-transparent'
+          ? 'bg-white/65 dark:bg-[rgba(5,10,20,0.75)] shadow-[0_10px_40px_rgba(15,23,42,0.08)] border-b border-border/50'
+          : 'bg-white/[0.08] dark:bg-[rgba(5,10,20,0.30)] border-b border-transparent'
       }`}
+      style={{
+        backdropFilter: 'blur(20px)',
+        WebkitBackdropFilter: 'blur(20px)',
+      }}
     >
       <div className="container mx-auto flex h-20 items-center justify-between gap-4 px-4">
         {/* Logo */}
@@ -273,20 +302,42 @@ export function Header() {
             );
           })}
 
-          {/* Simple nav links */}
-          {navLinks.map((link) => (
-            <Link
-              key={link.name}
-              href={link.href}
-              className={`rounded-full px-4 py-2 text-sm font-medium transition-all ${
-                isScrolled
-                  ? 'text-foreground hover:bg-muted'
-                  : 'text-white/80 hover:bg-white/10'
-              }`}
-            >
-              {link.name}
-            </Link>
-          ))}
+          {/* Simple nav links with active state */}
+          {navLinks.map((link) => {
+            const isActive =
+              link.href === '/'
+                ? pathname === '/'
+                : pathname.startsWith(link.href);
+
+            return (
+              <Link
+                key={link.name}
+                href={link.href}
+                className={`relative rounded-full px-4 py-2 text-sm font-medium transition-all duration-300 ${
+                  isActive
+                    ? isScrolled
+                      ? 'text-[#ff8c00] font-semibold'
+                      : 'text-[#ff8c00] font-semibold'
+                    : isScrolled
+                      ? 'text-foreground hover:text-[#ff8c00]/70'
+                      : 'text-white/80 hover:text-[#ff8c00]'
+                } ${!isActive && (isScrolled ? 'hover:bg-[#ff8c00]/10' : 'hover:bg-white/10')}`}
+              >
+                {link.name}
+                {/* Animated underline indicator */}
+                <motion.span
+                  layoutId="nav-active-indicator"
+                  className="absolute -bottom-0.5 left-1/2 h-[2px] -translate-x-1/2 rounded-full bg-[#ff8c00]"
+                  initial={false}
+                  animate={{
+                    width: isActive ? '60%' : '0%',
+                    opacity: isActive ? 1 : 0,
+                  }}
+                  transition={{ duration: 0.25, ease: 'easeOut' }}
+                />
+              </Link>
+            );
+          })}
         </nav>
 
         {/* Actions */}
@@ -316,7 +367,7 @@ export function Header() {
           </button>
 
           {/* Mobile Menu */}
-          <Sheet>
+          <Sheet onOpenChange={setIsMobileOpen}>
             <SheetTrigger asChild>
               <Button
                 variant="ghost"
@@ -332,10 +383,11 @@ export function Header() {
             </SheetTrigger>
             <SheetContent
               side="right"
-              className="rounded-[2rem] border border-border/50 bg-card p-6 shadow-2xl backdrop-blur-3xl"
+              className="flex h-dvh w-full flex-col border-0 p-0 md:hidden"
             >
-              <div className="mb-6 flex items-center justify-between">
-                <Link href="/" className="flex items-center gap-3">
+              {/* Fixed close button at top */}
+              <div className="sticky top-0 z-10 flex items-center justify-between border-b border-border/50 bg-card px-6 py-4">
+                <Link href="/" className="flex items-center gap-3" onClick={handleMobileLinkClick}>
                   <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-500 via-orange-500 to-teal-600 text-white">
                     IM
                   </div>
@@ -346,65 +398,90 @@ export function Header() {
                     </p>
                   </div>
                 </Link>
-                <DarkModeToggle />
-              </div>
-
-              <div className="space-y-6">
-                {megaMenuItems.map((group) => (
-                  <div key={group.title}>
-                    <p className="mb-2 text-sm font-semibold text-foreground">
-                      {group.title}
-                    </p>
-                    <div className="space-y-1">
-                      {group.items.map((item) => (
-                        <Link
-                          key={item.name}
-                          href={item.href}
-                          className="flex items-center gap-3 rounded-xl px-3 py-2.5 transition hover:bg-muted"
-                        >
-                          <div className="h-10 w-10 shrink-0 overflow-hidden rounded-lg">
-                            <img
-                              src={item.image}
-                              alt={item.name}
-                              className="h-full w-full object-cover"
-                            />
-                          </div>
-                          <div>
-                            <p className="text-sm font-medium text-foreground">
-                              {item.name}
-                            </p>
-                            <p className="text-xs text-muted-foreground">
-                              {item.meta}
-                            </p>
-                          </div>
-                        </Link>
-                      ))}
-                    </div>
-                  </div>
-                ))}
-
-                {/* Mobile nav links */}
-                <div className="space-y-1">
-                  {navLinks.map((link) => (
-                    <Link
-                      key={link.name}
-                      href={link.href}
-                      className="block rounded-xl px-4 py-3 text-sm font-medium text-foreground transition hover:bg-muted"
-                    >
-                      {link.name}
-                    </Link>
-                  ))}
+                <div className="flex items-center gap-2">
+                  <DarkModeToggle />
+                  <SheetClose className="flex h-9 w-9 items-center justify-center rounded-full bg-muted text-foreground transition hover:bg-muted/80">
+                    <X className="h-5 w-5" />
+                  </SheetClose>
                 </div>
               </div>
 
-              <div className="mt-6 space-y-3">
-                <Link
-                  href="/search"
-                  className="flex items-center justify-center gap-2 rounded-full border border-border/50 bg-card px-5 py-3 text-sm font-semibold text-foreground transition hover:bg-muted"
-                >
-                  <Search className="h-4 w-4" />
-                  Search
-                </Link>
+              {/* Scrollable content area */}
+              <div className="flex-1 overflow-y-auto px-6 pb-8 pt-6">
+                <div className="space-y-6">
+                  {megaMenuItems.map((group) => (
+                    <div key={group.title}>
+                      <p className="mb-2 text-sm font-semibold text-foreground">
+                        {group.title}
+                      </p>
+                      <div className="space-y-1">
+                        {group.items.map((item) => (
+                          <Link
+                            key={item.name}
+                            href={item.href}
+                            onClick={handleMobileLinkClick}
+                            className="flex items-center gap-3 rounded-xl px-3 py-2.5 transition hover:bg-muted"
+                          >
+                            <div className="h-10 w-10 shrink-0 overflow-hidden rounded-lg">
+                              <img
+                                src={item.image}
+                                alt={item.name}
+                                className="h-full w-full object-cover"
+                              />
+                            </div>
+                            <div>
+                              <p className="text-sm font-medium text-foreground">
+                                {item.name}
+                              </p>
+                              <p className="text-xs text-muted-foreground">
+                                {item.meta}
+                              </p>
+                            </div>
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+
+                  {/* Mobile nav links with active state */}
+                  <div className="space-y-1">
+                    {navLinks.map((link) => {
+                      const isActive =
+                        link.href === '/'
+                          ? pathname === '/'
+                          : pathname.startsWith(link.href);
+
+                      return (
+                        <Link
+                          key={link.name}
+                          href={link.href}
+                          onClick={handleMobileLinkClick}
+                          className={`flex items-center gap-2 rounded-xl px-4 py-3 text-sm font-medium transition ${
+                            isActive
+              ? 'text-[#ff8c00] bg-[#ff8c00]/10 font-semibold'
+                              : 'text-foreground hover:bg-muted'
+                          }`}
+                        >
+                          {isActive && (
+                            <span className="h-1.5 w-1.5 rounded-full bg-[#ff8c00]" />
+                          )}
+                          {link.name}
+                        </Link>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                <div className="mt-6 space-y-3">
+                  <Link
+                    href="/search"
+                    onClick={handleMobileLinkClick}
+                    className="flex items-center justify-center gap-2 rounded-full border border-border/50 bg-card px-5 py-3 text-sm font-semibold text-foreground transition hover:bg-muted"
+                  >
+                    <Search className="h-4 w-4" />
+                    Search
+                  </Link>
+                </div>
               </div>
             </SheetContent>
           </Sheet>
