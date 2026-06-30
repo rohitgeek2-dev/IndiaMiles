@@ -14,35 +14,6 @@ export type HomepageDestination = {
   tags: string[];
 };
 
-export type HomepageState = {
-  id: string;
-  name: string;
-  description: string;
-  imageUrl: string;
-  href: string;
-};
-
-export type HomepageCategory = {
-  id: string;
-  name: string;
-  description: string;
-  accent: string;
-  href: string;
-  icon: string;
-  color: string;
-};
-
-export type HomepageExperience = {
-  id: string;
-  title: string;
-  location: string;
-  tag: string;
-  price: string;
-  imageUrl: string;
-  href: string;
-  description: string;
-};
-
 export type Testimonial = {
   id: string;
   name: string;
@@ -52,12 +23,6 @@ export type Testimonial = {
   avatarUrl: string;
   isVerified: boolean;
   videoUrl?: string;
-};
-
-export type StatCounter = {
-  id: string;
-  value: string;
-  label: string;
 };
 
 export type TravelTheme = {
@@ -79,14 +44,6 @@ export type Recommendation = {
   rating: string;
   href: string;
   reason: string;
-};
-
-export type FloatingDestination = {
-  id: string;
-  name: string;
-  imageUrl: string;
-  price: string;
-  position: string;
 };
 
 export type Festival = {
@@ -132,29 +89,6 @@ export const trustIndicators = [
   { value: '4.9', label: 'Average Rating' },
 ];
 
-export const floatingDestinations: FloatingDestination[] = [
-  {
-    id: 'udaipur',
-    name: 'Udaipur',
-    imageUrl: 'https://images.unsplash.com/photo-1599661046289-e31897846e41?auto=format&fit=crop&w=400&q=80',
-    price: '₹18,500/night',
-    position: 'top-[15%] right-[8%]',
-  },
-  {
-    id: 'kerala-float',
-    name: 'Kerala',
-    imageUrl: 'https://images.unsplash.com/photo-1593693397690-362cb9666fc2?auto=format&fit=crop&w=400&q=80',
-    price: '₹16,000/night',
-    position: 'top-[45%] left-[5%]',
-  },
-  {
-    id: 'goa-float',
-    name: 'Goa',
-    imageUrl: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=400&q=80',
-    price: '₹12,500/night',
-    position: 'top-[70%] right-[12%]',
-  },
-];
 
 export const homepageDestinations: HomepageDestination[] = [
   {
@@ -412,101 +346,6 @@ export const trendingThisMonth: Recommendation[] = [
   },
 ];
 
-export const homepageStates: HomepageState[] = [
-  {
-    id: 'rajasthan',
-    name: 'Rajasthan',
-    description: 'Timeless palaces, desert luxury, and royal heritage journeys.',
-    imageUrl:
-      'https://images.unsplash.com/photo-1599661046289-e31897846e41?auto=format&fit=crop&w=1200&q=80',
-    href: '/states/rajasthan',
-  },
-  {
-    id: 'kerala-state',
-    name: 'Kerala',
-    description: 'Backwaters, spice-lined resorts, and lush tropical escapes.',
-    imageUrl:
-      'https://images.unsplash.com/photo-1593693397690-362cb9666fc2?auto=format&fit=crop&w=1200&q=80',
-    href: '/states/kerala',
-  },
-  {
-    id: 'goa-state',
-    name: 'Goa',
-    description: 'Sun-soaked beaches, luxury beach clubs, and vibrant coastal life.',
-    imageUrl:
-      'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80',
-    href: '/states/goa',
-  },
-  {
-    id: 'himachal',
-    name: 'Himachal Pradesh',
-    description: 'Pine forests, boutique hill resorts, and alpine wellness retreats.',
-    imageUrl: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=1200&q=80',
-    href: '/states/himachal-pradesh',
-  },
-  {
-    id: 'maharashtra',
-    name: 'Maharashtra',
-    description: 'Luxury city stays, coastal escapes, and cultural heritage tours.',
-    imageUrl: 'https://images.unsplash.com/photo-1570168007204-dfb528c6958f?auto=format&fit=crop&w=1200&q=80',
-    href: '/states/maharashtra',
-  },
-  {
-    id: 'tamil-nadu',
-    name: 'Tamil Nadu',
-    description: 'Spiritual temples, palace stays, and South India elegance.',
-    imageUrl: 'https://images.unsplash.com/photo-1600109397638-6e312e46f8d4?auto=format&fit=crop&w=1200&q=80',
-    href: '/states/tamil-nadu',
-  },
-];
-
-export const homepageExperiences: HomepageExperience[] = [
-  {
-    id: 'sunrise-palace',
-    title: 'Sunrise Palace Stay',
-    location: 'Jaipur, Rajasthan',
-    tag: 'Heritage Luxury',
-    price: 'From ₹18,500 / night',
-    imageUrl:
-      'https://images.unsplash.com/photo-1599661046289-e31897846e41?auto=format&fit=crop&w=1200&q=80',
-    href: '/destinations/jaipur-palace',
-    description: 'Wake up to royal vistas in a 300-year-old palace, now reimagined as a modern luxury sanctuary.',
-  },
-  {
-    id: 'backwater-sanctuary',
-    title: 'Backwater Sanctuary',
-    location: 'Alleppey, Kerala',
-    tag: 'Wellness Retreat',
-    price: 'From ₹16,000 / night',
-    imageUrl:
-      'https://images.unsplash.com/photo-1593693397690-362cb9666fc2?auto=format&fit=crop&w=1200&q=80',
-    href: '/destinations/kerala-backwaters',
-    description: 'Drift through emerald canals on a private houseboat, with Ayurvedic treatments under starlit skies.',
-  },
-  {
-    id: 'mountain-luxe',
-    title: 'Mountain Luxe Escape',
-    location: 'Uttarakhand Hills',
-    tag: 'Adventure & Calm',
-    price: 'From ₹14,800 / night',
-    imageUrl:
-      'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=1200&q=80',
-    href: '/destinations/uttarakhand-lodge',
-    description: 'Perched at 8,000 feet, this glass-walled lodge offers Himalayan panoramas with infinity-edge hot tubs.',
-  },
-  {
-    id: 'goa-beach-club',
-    title: 'Goa Beach Club Experience',
-    location: 'South Goa',
-    tag: 'Beach Luxury',
-    price: 'From ₹12,500 / night',
-    imageUrl:
-      'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80',
-    href: '/destinations/goa-beach-club',
-    description: 'Private beach cabanas, sunset champagne service, and curated coastal dining at its finest.',
-  },
-];
-
 export const homepageTestimonials: Testimonial[] = [
   {
     id: 'kavya',
@@ -553,13 +392,6 @@ export const homepageTestimonials: Testimonial[] = [
       'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=256&q=80',
     isVerified: true,
   },
-];
-
-export const homepageStats: StatCounter[] = [
-  { id: 'destinations', value: '520+', label: 'Destinations' },
-  { id: 'states', value: '28', label: 'States & UTs' },
-  { id: 'attractions', value: '1,200+', label: 'Curated Experiences' },
-  { id: 'travelers', value: '95K+', label: 'Travelers Served' },
 ];
 
 export const reviewStats = {
